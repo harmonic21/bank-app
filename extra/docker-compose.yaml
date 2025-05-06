@@ -1,0 +1,14 @@
+version: "3.9"
+name: bank_app
+services:
+  bank_db:
+    image: postgres:13.3
+    container_name: bank_db
+    environment:
+      POSTGRES_USER: bank_app_user
+      POSTGRES_PASSWORD: changeit
+      POSTGRES_DB: yandex_practicum
+    volumes:
+      - ./db-scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
