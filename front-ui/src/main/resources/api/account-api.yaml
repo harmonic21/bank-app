@@ -1,0 +1,109 @@
+openapi: 3.0.3
+info:
+  title: Сервис аккаунтов
+  version: 1.0.0-SNAPSHOT
+servers:
+  - url: http://localhost:8090
+  - url: http://account:8080
+paths:
+  /user/info/{username}:
+    get:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: GetUserInfoByUsername
+      summary: Получение информации о пользователе по его имени
+      description: Возвращает информацию о пользователе
+      tags:
+        - user
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoRs'
+        "404":
+          description: "NOT FOUND USER BY USERNAME"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseInfo'
+  /user/register:
+    post:
+      operationId: RegisterNewUser
+      summary: Регистрация нового пользователя в системе
+      description: Данные из UI формы передаются в систему и сохраняются в БД
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterInfo'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoRs'
+components:
+  schemas:
+    UserInfoRs:
+      title: UserInfo
+      description: Информация о пользователе
+      type: object
+      required:
+        - id
+        - username
+        - password
+        - roles
+      properties:
+        id:
+          type: string
+          description: уникальный идентификатор пользователя
+        username:
+          type: string
+          description: уникальное имя пользователя
+        password:
+          type: string
+          description: зашифрованный пароль пользователя
+        roles:
+          type: array
+          items:
+            type: string
+            description: роль пользователя
+    UserRegisterInfo:
+      title: UserRegisterInfo
+      description: Информация о новом пользователе
+      type: object
+      required:
+        - username
+        - password
+        - roles
+      properties:
+        username:
+          type: string
+          description: уникальное имя пользователя
+        password:
+          type: string
+          description: зашифрованный пароль пользователя
+        roles:
+          type: array
+          items:
+            type: string
+            description: роль пользователя
+    ErrorResponseInfo:
+      title: ErrorResponseInfo
+      description: Детальная информация об ошибке и ее причинах
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Сообщение о причинах ошибки

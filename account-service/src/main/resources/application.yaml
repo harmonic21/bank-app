@@ -8,3 +8,5 @@ spring:
     properties:
       hibernate:
         default_schema: bank_account
+server:
+  port: 8090
