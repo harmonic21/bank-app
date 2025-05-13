@@ -1,5 +1,6 @@
 package ru.yandex.practicum.front.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,7 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-    public String signupNewUser(@ModelAttribute SignupUserInfoDto userInfo) {
+    public String signupNewUser(@Valid @ModelAttribute SignupUserInfoDto userInfo) {
         signupUserService.signupNewUser(userInfo);
         return "redirect:/";
     }
