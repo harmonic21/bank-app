@@ -1,13 +1,15 @@
-package ru.yandex.practicum.front.controller;
+
+package ru.yandex.practicum.front.controller.error;
 
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import ru.yandex.practicum.front.controller.SignupController;
 
-@ControllerAdvice
-public class ErrorController {
+@ControllerAdvice(assignableTypes = SignupController.class)
+public class SignupControllerError {
 
     @ExceptionHandler(exception = MethodArgumentNotValidException.class)
     public ModelAndView signupFormNotValid(MethodArgumentNotValidException ex) {

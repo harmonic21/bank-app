@@ -19,7 +19,7 @@ public class SignupUserService {
     public void signupNewUser(SignupUserInfoDto userInfo) {
         UserRegisterInfo userRegisterInfo = new UserRegisterInfo()
                 .username(userInfo.getLogin())
-                .password(passwordEncoder.encode(userInfo.getPassword()))
+                .password(passwordEncoder.encode(userInfo.getPasswordInfo().getPassword()))
                 .roles(List.of("USER"));
         userAccountServiceClient.registerNewUserWithHttpInfo(userRegisterInfo).block();
     }
