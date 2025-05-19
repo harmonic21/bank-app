@@ -6,7 +6,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.yandex.practicum.account.api.UserApi;
+import ru.yandex.practicum.front.error.IntegrationErrorException;
+import ru.yandex.practicum.front.error.UserNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +20,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userAccountServiceClient.getUserInfoByUsername(username)
+                .onErrorMap(throwable -> mapAccountServiceError(throwable, username))
                 .blockOptional()
                 .map(userInfo -> User.builder()
                         .username(userInfo.getUsername())
@@ -24,6 +28,14 @@ public class UserService implements UserDetailsService {
                         .roles(userInfo.getRoles().toArray(new String[0]))
                         .build()
                 )
-                .orElse(null);
+                .orElseThrow(null);
+    }
+
+    private Throwable mapAccountServiceError(Throwable throwable, String userName) {
+        if (throwable instanceof WebClientResponseException.NotFound e) {
+            return new UserNotFoundException(userName);
+        } else {
+            return new IntegrationErrorException("acount service");
+        }
     }
 }

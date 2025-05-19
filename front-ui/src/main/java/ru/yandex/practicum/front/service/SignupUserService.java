@@ -20,6 +20,8 @@ public class SignupUserService {
         UserRegisterInfo userRegisterInfo = new UserRegisterInfo()
                 .username(userInfo.getLogin())
                 .password(passwordEncoder.encode(userInfo.getPasswordInfo().getPassword()))
+                .fullName(userInfo.getPersonalInfo().getName())
+                .birthDay(userInfo.getPersonalInfo().getBirthDate())
                 .roles(List.of("USER"));
         userAccountServiceClient.registerNewUserWithHttpInfo(userRegisterInfo).block();
     }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.account.api.UserApi;
+import ru.yandex.practicum.account.model.UpdateUserInfoRq;
 import ru.yandex.practicum.account.model.UserInfoRs;
 import ru.yandex.practicum.account.model.UserRegisterInfo;
 import ru.yandex.practicum.account.service.UserService;
@@ -22,5 +23,11 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<UserInfoRs> registerNewUser(UserRegisterInfo userRegisterInfo) {
         return ResponseEntity.ok(userService.saveNewUser(userRegisterInfo));
+    }
+
+    @Override
+    public ResponseEntity<UserInfoRs> updateUserInfo(String username,
+                                                     UpdateUserInfoRq updateUserInfoRq) {
+        return ResponseEntity.ok(userService.updateUser(username, updateUserInfoRq));
     }
 }

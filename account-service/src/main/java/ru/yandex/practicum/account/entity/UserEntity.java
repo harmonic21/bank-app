@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -20,6 +21,10 @@ public class UserEntity {
     private String username;
     @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "full_name")
+    private String fullName;
+    @Column(name = "birthday")
+    private LocalDate birthDay;
     @Column(name = "roles", nullable = false)
     private String[] roles;
 }

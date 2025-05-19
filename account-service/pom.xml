@@ -82,7 +82,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>ru.yandex.practicum.account.Application</mainClass>
+                    <mainClass>ru.yandex.practicum.account.AccountApp</mainClass>
                 </configuration>
             </plugin>
             <plugin>

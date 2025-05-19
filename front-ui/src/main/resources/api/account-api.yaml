@@ -6,7 +6,7 @@ servers:
   - url: http://localhost:8090
   - url: http://account:8080
 paths:
-  /user/info/{username}:
+  /user/{username}/info:
     get:
       parameters:
         - name: username
@@ -51,8 +51,47 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfoRs'
+  /user/{username}/update:
+    put:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: UpdateUserInfo
+      summary: Обновить информацию о пользователе
+      description: Данные из UI формы передаются в систему и сохраняются в БД
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserInfoRq'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoRs'
 components:
   schemas:
+    UpdateUserInfoRq:
+      title: UpdateUserInfoRq
+      description: Информация о пользователе к обновлению
+      type: object
+      properties:
+        password:
+          type: string
+          description: зашифрованный пароль пользователя
+        fullName:
+          type: string
+          description: полное имя пользователя
+        birthDay:
+          type: date
+          description: точная дата рождения пользователя
     UserInfoRs:
       title: UserInfo
       description: Информация о пользователе
@@ -61,6 +100,8 @@ components:
         - id
         - username
         - password
+        - fullName
+        - birthDay
         - roles
       properties:
         id:
@@ -72,6 +113,12 @@ components:
         password:
           type: string
           description: зашифрованный пароль пользователя
+        fullName:
+          type: string
+          description: полное имя пользователя
+        birthDay:
+          type: date
+          description: точная дата рождения пользователя
         roles:
           type: array
           items:
@@ -84,6 +131,8 @@ components:
       required:
         - username
         - password
+        - fullName
+        - birthDay
         - roles
       properties:
         username:
@@ -92,6 +141,12 @@ components:
         password:
           type: string
           description: зашифрованный пароль пользователя
+        fullName:
+          type: string
+          description: полное имя пользователя
+        birthDay:
+          type: date
+          description: точная дата рождения пользователя
         roles:
           type: array
           items:
