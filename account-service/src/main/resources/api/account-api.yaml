@@ -76,6 +76,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfoRs'
+  /account/{username}/delete:
+    delete:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: DeleteUserAccount
+      summary: Удалить счет пользователя
+      description: Данные из UI формы передаются в систему и после проверки допустимости действия - счет удаляется из БД
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteAccountRq'
+      responses:
+        "200":
+          description: "OK"
+  /account/{username}/create:
+    post:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: CreateUserAccount
+      summary: Создать новый счет пользователя
+      description: Данные из UI формы передаются в систему и после проверки допустимости действия - счет создается в БД
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountRq'
+      responses:
+        "200":
+          description: "OK"
 components:
   schemas:
     UpdateUserInfoRq:
@@ -103,6 +145,7 @@ components:
         - fullName
         - birthDay
         - roles
+        - accounts
       properties:
         id:
           type: string
@@ -124,6 +167,28 @@ components:
           items:
             type: string
             description: роль пользователя
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDetailInfo'
+    AccountDetailInfo:
+      title: AccountDetailInfo
+      description: Информация о счете
+      type: object
+      required:
+        - id
+        - currency
+        - balance
+      properties:
+        id:
+          type: string
+          description: id счета
+        currency:
+          type: string
+          description: валюта счета
+        balance:
+          type: number
+          description: количество средств на счете
     UserRegisterInfo:
       title: UserRegisterInfo
       description: Информация о новом пользователе
@@ -162,3 +227,27 @@ components:
         message:
           type: string
           description: Сообщение о причинах ошибки
+    DeleteAccountRq:
+      title: DeleteAccountRq
+      description: Запрос на удаление счета пользователя
+      type: object
+      required:
+        - currency
+      properties:
+        currency:
+          type: array
+          items:
+            type: string
+            description: валюта счета
+    CreateAccountRq:
+      title: CreateAccountRq
+      description: Запрос на создание счета пользователя
+      type: object
+      required:
+        - currency
+      properties:
+        currency:
+          type: array
+          items:
+            type: string
+            description: валюта счета

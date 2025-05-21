@@ -2,9 +2,13 @@ package ru.yandex.practicum.account.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -27,4 +31,10 @@ public class UserEntity {
     private LocalDate birthDay;
     @Column(name = "roles", nullable = false)
     private String[] roles;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserAccountEntity> accounts = new HashSet<>();
+
+    public void addAccount(UserAccountEntity userAccountEntity) {
+        accounts.add(userAccountEntity);
+    }
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SignupUserService {
 
-    private final UserApi userAccountServiceClient;
+    private final UserApi userServiceClient;
     private final PasswordEncoder passwordEncoder;
 
     public void signupNewUser(SignupUserInfoDto userInfo) {
@@ -23,6 +23,6 @@ public class SignupUserService {
                 .fullName(userInfo.getPersonalInfo().getName())
                 .birthDay(userInfo.getPersonalInfo().getBirthDate())
                 .roles(List.of("USER"));
-        userAccountServiceClient.registerNewUserWithHttpInfo(userRegisterInfo).block();
+        userServiceClient.registerNewUserWithHttpInfo(userRegisterInfo).block();
     }
 }

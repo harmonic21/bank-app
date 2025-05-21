@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 import ru.yandex.practicum.front.validation.AdultBirthDay;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Accessors(chain = true)
@@ -15,4 +16,5 @@ public class PersonalUserInfoDto {
     @NotNull
     @AdultBirthDay
     private LocalDate birthDate;
+    private List<AccountInfoDto> accounts;
 }

@@ -15,11 +15,11 @@ import ru.yandex.practicum.front.error.UserNotFoundException;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-    private final UserApi userAccountServiceClient;
+    private final UserApi userServiceClient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userAccountServiceClient.getUserInfoByUsername(username)
+        return userServiceClient.getUserInfoByUsername(username)
                 .onErrorMap(throwable -> mapAccountServiceError(throwable, username))
                 .blockOptional()
                 .map(userInfo -> User.builder()

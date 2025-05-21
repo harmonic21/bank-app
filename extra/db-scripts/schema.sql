@@ -8,3 +8,10 @@ CREATE TABLE IF NOT EXISTS bank_account.bank_user (
     full_name varchar(255),
     roles varchar[]
 );
+
+CREATE TABLE IF NOT EXISTS bank_account.user_account (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES bank_account.bank_user(id),
+    currency varchar(50) NOT NULL,
+    balance NUMERIC NOT NULL
+)
