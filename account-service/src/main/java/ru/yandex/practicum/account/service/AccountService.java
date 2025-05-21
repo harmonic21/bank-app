@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.account.entity.UserAccountEntity;
 import ru.yandex.practicum.account.entity.UserEntity;
+import ru.yandex.practicum.account.model.ChangeCashRq;
 import ru.yandex.practicum.account.model.CreateAccountRq;
 import ru.yandex.practicum.account.model.DeleteAccountRq;
 import ru.yandex.practicum.account.repository.AccountRepository;
@@ -40,6 +41,24 @@ public class AccountService {
                                 accountRepository.delete(account);
                             }
                         });
+    }
+
+    @Transactional
+    public void addCashToAccount(String userName, ChangeCashRq request) {
+        accountRepository.findUserAccountWithCurrency(userName, request.getCurrency())
+                .ifPresent(account -> {
+                    account.setBalance(account.getBalance().add(request.getValue()));
+                    accountRepository.save(account);
+                });
+    }
+
+    @Transactional
+    public void getCashFromAccount(String userName, ChangeCashRq request) {
+        accountRepository.findUserAccountWithCurrency(userName, request.getCurrency())
+                .ifPresent(account -> {
+                    account.setBalance(account.getBalance().subtract(request.getValue()));
+                    accountRepository.save(account);
+                });
     }
 
     private UserAccountEntity mapNewAccount(UserEntity user, String currency) {

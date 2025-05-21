@@ -118,6 +118,47 @@ paths:
       responses:
         "200":
           description: "OK"
+  /account/{username}/cash:
+    put:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: AddCashToAccount
+      summary: Внести наличные средства на счет
+      description: Данные из UI формы передаются в систему и после проверки допустимости действия - средства зачисляются на счет
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeCashRq'
+      responses:
+        "200":
+          description: "OK"
+    get:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: GetCashFromAccount
+      summary: Снять наличные средства со счета
+      description: Данные из UI формы передаются в систему и после проверки допустимости действия - средства списываются со счета
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeCashRq'
+      responses:
+        "200":
+          description: "OK"
 components:
   schemas:
     UpdateUserInfoRq:
@@ -251,3 +292,16 @@ components:
           items:
             type: string
             description: валюта счета
+    ChangeCashRq:
+      title: ChangeCashRq
+      description: Запрос на внесение / снятие наличных средств со счета
+      type: object
+      required:
+        - currency
+      properties:
+        currency:
+          type: string
+          description: валюта счета
+        value:
+          type: number
+          description: количество средств

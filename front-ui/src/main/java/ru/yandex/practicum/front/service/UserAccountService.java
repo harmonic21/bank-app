@@ -6,14 +6,12 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import ru.yandex.practicum.account.api.AccountApi;
 import ru.yandex.practicum.account.api.UserApi;
-import ru.yandex.practicum.account.model.CreateAccountRq;
-import ru.yandex.practicum.account.model.DeleteAccountRq;
-import ru.yandex.practicum.account.model.UpdateUserInfoRq;
-import ru.yandex.practicum.account.model.UserInfoRs;
+import ru.yandex.practicum.account.model.*;
 import ru.yandex.practicum.front.constants.AccountCurrency;
 import ru.yandex.practicum.front.dto.AccountInfoDto;
 import ru.yandex.practicum.front.dto.PersonalUserInfoDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,6 +40,20 @@ public class UserAccountService {
                 .blockOptional()
                 .orElse(null);
         createOrDeleteAccounts(userName, personalInfo.getAccounts());
+    }
+
+    public void addCashToAccount(String userName, String currency, BigDecimal value) {
+        userAccountServiceClient.addCashToAccount(
+                userName,
+                new ChangeCashRq().currency(currency).value(value)
+        ).block();
+    }
+
+    public void getCashFromAccount(String userName, String currency, BigDecimal value) {
+        userAccountServiceClient.getCashFromAccount(
+                userName,
+                new ChangeCashRq().currency(currency).value(value)
+        ).block();
     }
 
     private void createOrDeleteAccounts(String userName, List<AccountInfoDto> accounts) {

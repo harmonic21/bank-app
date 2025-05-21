@@ -8,10 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.account.model.AccountDetailInfo;
 import ru.yandex.practicum.account.model.UserInfoRs;
 import ru.yandex.practicum.front.constants.AccountCurrency;
@@ -48,8 +45,12 @@ public class MainController {
         var accountsInfo = userDetailInfo.map(UserInfoRs::getAccounts)
                 .map(this::mapAccountInfo)
                 .orElse(Collections.emptyList());
+        var currency = accountsInfo.stream()
+                .filter(AccountInfoDto::isExists)
+                .map(AccountInfoDto::getCurrency)
+                .toList();
         model.addAttribute("personalInfo", personalInfo.setAccounts(accountsInfo));
-//        model.addAttribute("accounts", accountsInfo);
+        model.addAttribute("currency", currency);
         return "main.html";
     }
 
@@ -82,6 +83,21 @@ public class MainController {
             userAccountService.updatePersonalUserInfo(login, personalUserInfoDto);
         }
         return "main.html";
+    }
+
+    @PostMapping("/user/{login}/сash")
+    public String changeCashOnAccount(@PathVariable(name = "login") String login,
+                                      @ModelAttribute(name = "action") String action,
+                                      @ModelAttribute(name = "currency") String currency,
+                                      @ModelAttribute(name = "value") BigDecimal value,
+                                      BindingResult bindingResult,
+                                      Model model) {
+        if (Objects.equals("PUT", action)) {
+            userAccountService.addCashToAccount(login, currency, value);
+        } else if (Objects.equals("GET", action)) {
+            userAccountService.getCashFromAccount(login, currency, value);
+        }
+        return "redirect:/";
     }
 
     @ModelAttribute("passwordInfo")
