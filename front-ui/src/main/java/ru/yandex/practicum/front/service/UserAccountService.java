@@ -6,7 +6,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import ru.yandex.practicum.account.api.AccountApi;
 import ru.yandex.practicum.account.api.UserApi;
-import ru.yandex.practicum.account.model.*;
+import ru.yandex.practicum.account.model.CreateAccountRq;
+import ru.yandex.practicum.account.model.DeleteAccountRq;
+import ru.yandex.practicum.account.model.UpdateUserInfoRq;
+import ru.yandex.practicum.account.model.UserInfoRs;
+import ru.yandex.practicum.cash.api.CashApi;
 import ru.yandex.practicum.front.constants.AccountCurrency;
 import ru.yandex.practicum.front.dto.AccountInfoDto;
 import ru.yandex.practicum.front.dto.PersonalUserInfoDto;
@@ -22,6 +26,7 @@ import static java.util.function.Predicate.not;
 public class UserAccountService {
     private final UserApi userServiceClient;
     private final AccountApi userAccountServiceClient;
+    private final CashApi cashClient;
     private final PasswordEncoder passwordEncoder;
 
     public Optional<UserInfoRs> getUserInfoDetailByUserName(String username) {
@@ -42,17 +47,13 @@ public class UserAccountService {
         createOrDeleteAccounts(userName, personalInfo.getAccounts());
     }
 
-    public void addCashToAccount(String userName, String currency, BigDecimal value) {
-        userAccountServiceClient.addCashToAccount(
-                userName,
-                new ChangeCashRq().currency(currency).value(value)
-        ).block();
-    }
-
-    public void getCashFromAccount(String userName, String currency, BigDecimal value) {
-        userAccountServiceClient.getCashFromAccount(
-                userName,
-                new ChangeCashRq().currency(currency).value(value)
+    public void updateCash(String action, String userName, String currency, BigDecimal value) {
+        cashClient.updateCash(
+                new ru.yandex.practicum.cash.model.ChangeCashRq()
+                        .userName(userName)
+                        .action(action)
+                        .currency(currency)
+                        .value(value)
         ).block();
     }
 

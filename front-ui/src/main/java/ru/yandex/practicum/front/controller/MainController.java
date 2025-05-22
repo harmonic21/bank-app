@@ -8,7 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import ru.yandex.practicum.account.model.AccountDetailInfo;
 import ru.yandex.practicum.account.model.UserInfoRs;
 import ru.yandex.practicum.front.constants.AccountCurrency;
@@ -92,11 +95,7 @@ public class MainController {
                                       @ModelAttribute(name = "value") BigDecimal value,
                                       BindingResult bindingResult,
                                       Model model) {
-        if (Objects.equals("PUT", action)) {
-            userAccountService.addCashToAccount(login, currency, value);
-        } else if (Objects.equals("GET", action)) {
-            userAccountService.getCashFromAccount(login, currency, value);
-        }
+        userAccountService.updateCash(action, login, currency, value);
         return "redirect:/";
     }
 

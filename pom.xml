@@ -16,5 +16,7 @@
     <modules>
         <module>front-ui</module>
         <module>account-service</module>
+        <module>cash-service</module>
+        <module>blocker-service</module>
     </modules>
 </project>

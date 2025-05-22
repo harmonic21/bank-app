@@ -1,0 +1,307 @@
+openapi: 3.0.3
+info:
+  title: Сервис аккаунтов
+  version: 1.0.0-SNAPSHOT
+servers:
+  - url: http://localhost:8090
+  - url: http://account:8080
+paths:
+  /user/{username}/info:
+    get:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: GetUserInfoByUsername
+      summary: Получение информации о пользователе по его имени
+      description: Возвращает информацию о пользователе
+      tags:
+        - user
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoRs'
+        "404":
+          description: "NOT FOUND USER BY USERNAME"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseInfo'
+  /user/register:
+    post:
+      operationId: RegisterNewUser
+      summary: Регистрация нового пользователя в системе
+      description: Данные из UI формы передаются в систему и сохраняются в БД
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegisterInfo'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoRs'
+  /user/{username}/update:
+    put:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: UpdateUserInfo
+      summary: Обновить информацию о пользователе
+      description: Данные из UI формы передаются в систему и сохраняются в БД
+      tags:
+        - user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserInfoRq'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfoRs'
+  /account/{username}/delete:
+    delete:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: DeleteUserAccount
+      summary: Удалить счет пользователя
+      description: Данные из UI формы передаются в систему и после проверки допустимости действия - счет удаляется из БД
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteAccountRq'
+      responses:
+        "200":
+          description: "OK"
+  /account/{username}/create:
+    post:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: CreateUserAccount
+      summary: Создать новый счет пользователя
+      description: Данные из UI формы передаются в систему и после проверки допустимости действия - счет создается в БД
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountRq'
+      responses:
+        "200":
+          description: "OK"
+  /account/{username}/cash:
+    put:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: AddCashToAccount
+      summary: Внести наличные средства на счет
+      description: Данные из UI формы передаются в систему и после проверки допустимости действия - средства зачисляются на счет
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeCashRq'
+      responses:
+        "200":
+          description: "OK"
+    get:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: GetCashFromAccount
+      summary: Снять наличные средства со счета
+      description: Данные из UI формы передаются в систему и после проверки допустимости действия - средства списываются со счета
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeCashRq'
+      responses:
+        "200":
+          description: "OK"
+components:
+  schemas:
+    UpdateUserInfoRq:
+      title: UpdateUserInfoRq
+      description: Информация о пользователе к обновлению
+      type: object
+      properties:
+        password:
+          type: string
+          description: зашифрованный пароль пользователя
+        fullName:
+          type: string
+          description: полное имя пользователя
+        birthDay:
+          type: date
+          description: точная дата рождения пользователя
+    UserInfoRs:
+      title: UserInfo
+      description: Информация о пользователе
+      type: object
+      required:
+        - id
+        - username
+        - password
+        - fullName
+        - birthDay
+        - roles
+        - accounts
+      properties:
+        id:
+          type: string
+          description: уникальный идентификатор пользователя
+        username:
+          type: string
+          description: уникальное имя пользователя
+        password:
+          type: string
+          description: зашифрованный пароль пользователя
+        fullName:
+          type: string
+          description: полное имя пользователя
+        birthDay:
+          type: date
+          description: точная дата рождения пользователя
+        roles:
+          type: array
+          items:
+            type: string
+            description: роль пользователя
+        accounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountDetailInfo'
+    AccountDetailInfo:
+      title: AccountDetailInfo
+      description: Информация о счете
+      type: object
+      required:
+        - id
+        - currency
+        - balance
+      properties:
+        id:
+          type: string
+          description: id счета
+        currency:
+          type: string
+          description: валюта счета
+        balance:
+          type: number
+          description: количество средств на счете
+    UserRegisterInfo:
+      title: UserRegisterInfo
+      description: Информация о новом пользователе
+      type: object
+      required:
+        - username
+        - password
+        - fullName
+        - birthDay
+        - roles
+      properties:
+        username:
+          type: string
+          description: уникальное имя пользователя
+        password:
+          type: string
+          description: зашифрованный пароль пользователя
+        fullName:
+          type: string
+          description: полное имя пользователя
+        birthDay:
+          type: date
+          description: точная дата рождения пользователя
+        roles:
+          type: array
+          items:
+            type: string
+            description: роль пользователя
+    ErrorResponseInfo:
+      title: ErrorResponseInfo
+      description: Детальная информация об ошибке и ее причинах
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Сообщение о причинах ошибки
+    DeleteAccountRq:
+      title: DeleteAccountRq
+      description: Запрос на удаление счета пользователя
+      type: object
+      required:
+        - currency
+      properties:
+        currency:
+          type: array
+          items:
+            type: string
+            description: валюта счета
+    CreateAccountRq:
+      title: CreateAccountRq
+      description: Запрос на создание счета пользователя
+      type: object
+      required:
+        - currency
+      properties:
+        currency:
+          type: array
+          items:
+            type: string
+            description: валюта счета
+    ChangeCashRq:
+      title: ChangeCashRq
+      description: Запрос на внесение / снятие наличных средств со счета
+      type: object
+      required:
+        - currency
+      properties:
+        currency:
+          type: string
+          description: валюта счета
+        value:
+          type: number
+          description: количество средств
