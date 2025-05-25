@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS bank_account.bank_user (
     password text NOT NULL,
     birthday date,
     full_name varchar(255),
+    email varchar(255),
     roles varchar[]
 );
 

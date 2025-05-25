@@ -175,6 +175,9 @@ components:
         birthDay:
           type: date
           description: точная дата рождения пользователя
+        email:
+          type: string
+          description: почта пользователя
     UserInfoRs:
       title: UserInfo
       description: Информация о пользователе
@@ -185,6 +188,7 @@ components:
         - password
         - fullName
         - birthDay
+        - email
         - roles
         - accounts
       properties:
@@ -203,6 +207,9 @@ components:
         birthDay:
           type: date
           description: точная дата рождения пользователя
+        email:
+          type: string
+          description: почта пользователя
         roles:
           type: array
           items:
@@ -239,6 +246,7 @@ components:
         - password
         - fullName
         - birthDay
+        - email
         - roles
       properties:
         username:
@@ -253,6 +261,9 @@ components:
         birthDay:
           type: date
           description: точная дата рождения пользователя
+        email:
+          type: string
+          description: почта пользователя
         roles:
           type: array
           items:

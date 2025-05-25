@@ -43,7 +43,8 @@ public class MainController {
         var userDetailInfo = userAccountService.getUserInfoDetailByUserName(authentication.getName());
         var personalInfo = userDetailInfo.map(userDetail -> new PersonalUserInfoDto()
                         .setName(userDetail.getFullName())
-                        .setBirthDate(userDetail.getBirthDay()))
+                        .setBirthDate(userDetail.getBirthDay())
+                        .setEmail(userDetail.getEmail()))
                 .orElse(new PersonalUserInfoDto());
         var accountsInfo = userDetailInfo.map(UserInfoRs::getAccounts)
                 .map(this::mapAccountInfo)

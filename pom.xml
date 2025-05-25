@@ -18,5 +18,6 @@
         <module>account-service</module>
         <module>cash-service</module>
         <module>blocker-service</module>
+        <module>notification-service</module>
     </modules>
 </project>

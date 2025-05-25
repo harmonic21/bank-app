@@ -29,6 +29,8 @@ public class UserEntity {
     private String fullName;
     @Column(name = "birthday")
     private LocalDate birthDay;
+    @Column(name = "email")
+    private String email;
     @Column(name = "roles", nullable = false)
     private String[] roles;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

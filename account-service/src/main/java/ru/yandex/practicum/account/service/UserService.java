@@ -39,6 +39,7 @@ public class UserService {
                             Optional.ofNullable(updateRequest.getFullName()).ifPresent(userEntity::setFullName);
                             Optional.ofNullable(updateRequest.getPassword()).ifPresent(userEntity::setPassword);
                             Optional.ofNullable(updateRequest.getBirthDay()).ifPresent(userEntity::setBirthDay);
+                            Optional.ofNullable(updateRequest.getEmail()).ifPresent(userEntity::setEmail);
                             userRepository.save(userEntity);
                         },
                         () -> {throw new UserNotFoundException(userName);}

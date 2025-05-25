@@ -22,6 +22,7 @@ public class SignupUserService {
                 .password(passwordEncoder.encode(userInfo.getPasswordInfo().getPassword()))
                 .fullName(userInfo.getPersonalInfo().getName())
                 .birthDay(userInfo.getPersonalInfo().getBirthDate())
+                .email(userInfo.getPersonalInfo().getEmail())
                 .roles(List.of("USER"));
         userServiceClient.registerNewUserWithHttpInfo(userRegisterInfo).block();
     }

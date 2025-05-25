@@ -40,7 +40,10 @@ public class UserAccountService {
     public void updatePersonalUserInfo(String userName, PersonalUserInfoDto personalInfo) {
         var personalInfoUpdateResult = userServiceClient.updateUserInfo(
                         userName,
-                        new UpdateUserInfoRq().fullName(personalInfo.getName()).birthDay(personalInfo.getBirthDate())
+                        new UpdateUserInfoRq()
+                                .fullName(personalInfo.getName())
+                                .birthDay(personalInfo.getBirthDate())
+                                .email(personalInfo.getEmail())
                 )
                 .blockOptional()
                 .orElse(null);
