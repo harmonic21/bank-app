@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.yandex.practicum.account.model.AccountDetailInfo;
+import ru.yandex.practicum.account.model.UserInfo;
 import ru.yandex.practicum.account.model.UserInfoRs;
 import ru.yandex.practicum.front.constants.AccountCurrency;
 import ru.yandex.practicum.front.dto.AccountInfoDto;
@@ -41,12 +42,14 @@ public class MainController {
     public String getMainPage(Model model,
                               Authentication authentication) {
         var userDetailInfo = userAccountService.getUserInfoDetailByUserName(authentication.getName());
-        var personalInfo = userDetailInfo.map(userDetail -> new PersonalUserInfoDto()
+        var personalInfo = userDetailInfo.map(UserInfoRs::getUserInfo)
+                .map(userDetail -> new PersonalUserInfoDto()
                         .setName(userDetail.getFullName())
                         .setBirthDate(userDetail.getBirthDay())
                         .setEmail(userDetail.getEmail()))
                 .orElse(new PersonalUserInfoDto());
-        var accountsInfo = userDetailInfo.map(UserInfoRs::getAccounts)
+        var accountsInfo = userDetailInfo.map(UserInfoRs::getUserInfo)
+                .map(UserInfo::getAccounts)
                 .map(this::mapAccountInfo)
                 .orElse(Collections.emptyList());
         var currency = accountsInfo.stream()

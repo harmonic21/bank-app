@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.account.api.UserApi;
-import ru.yandex.practicum.account.model.UpdateUserInfoRq;
-import ru.yandex.practicum.account.model.UserInfoRs;
-import ru.yandex.practicum.account.model.UserRegisterInfo;
+import ru.yandex.practicum.account.model.*;
 import ru.yandex.practicum.account.service.UserService;
 
 @RestController
@@ -17,17 +15,20 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<UserInfoRs> getUserInfoByUsername(String username) {
-        return ResponseEntity.ok(userService.findByUsername(username));
+        UserInfo result = userService.findByUsername(username);
+        return ResponseEntity.ok(new UserInfoRs().userInfo(result).responseInfo(new ResponseInfo(true)));
     }
 
     @Override
     public ResponseEntity<UserInfoRs> registerNewUser(UserRegisterInfo userRegisterInfo) {
-        return ResponseEntity.ok(userService.saveNewUser(userRegisterInfo));
+        UserInfo result = userService.saveNewUser(userRegisterInfo);
+        return ResponseEntity.ok(new UserInfoRs().userInfo(result).responseInfo(new ResponseInfo(true)));
     }
 
     @Override
     public ResponseEntity<UserInfoRs> updateUserInfo(String username,
                                                      UpdateUserInfoRq updateUserInfoRq) {
-        return ResponseEntity.ok(userService.updateUser(username, updateUserInfoRq));
+        UserInfo result = userService.updateUser(username, updateUserInfoRq);
+        return ResponseEntity.ok(new UserInfoRs().userInfo(result).responseInfo(new ResponseInfo(true)));
     }
 }

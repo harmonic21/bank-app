@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import ru.yandex.practicum.account.api.UserApi;
+import ru.yandex.practicum.account.model.UserInfoRs;
 import ru.yandex.practicum.front.error.IntegrationErrorException;
 import ru.yandex.practicum.front.error.UserNotFoundException;
 
@@ -22,6 +23,7 @@ public class UserService implements UserDetailsService {
         return userServiceClient.getUserInfoByUsername(username)
                 .onErrorMap(throwable -> mapAccountServiceError(throwable, username))
                 .blockOptional()
+                .map(UserInfoRs::getUserInfo)
                 .map(userInfo -> User.builder()
                         .username(userInfo.getUsername())
                         .password(userInfo.getPassword())

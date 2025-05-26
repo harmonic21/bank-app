@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.account.exceptions.UserNotFoundException;
 import ru.yandex.practicum.account.mapper.UserInfoMapper;
 import ru.yandex.practicum.account.model.UpdateUserInfoRq;
-import ru.yandex.practicum.account.model.UserInfoRs;
+import ru.yandex.practicum.account.model.UserInfo;
 import ru.yandex.practicum.account.model.UserRegisterInfo;
 import ru.yandex.practicum.account.repository.UserRepository;
 
@@ -19,20 +19,20 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserInfoMapper userInfoMapper;
 
-    public UserInfoRs findByUsername(String username) {
+    public UserInfo findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(userInfoMapper::mapToUserInfo)
                 .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     @Transactional
-    public UserInfoRs saveNewUser(UserRegisterInfo userInfo) {
+    public UserInfo saveNewUser(UserRegisterInfo userInfo) {
         var newUser = userRepository.save(userInfoMapper.mapToEntity(userInfo));
         return userInfoMapper.mapToUserInfo(newUser);
     }
 
     @Transactional
-    public UserInfoRs updateUser(String userName, UpdateUserInfoRq updateRequest) {
+    public UserInfo updateUser(String userName, UpdateUserInfoRq updateRequest) {
         userRepository.findByUsername(userName)
                 .ifPresentOrElse(
                         userEntity -> {

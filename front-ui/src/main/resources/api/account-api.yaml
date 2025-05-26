@@ -26,8 +26,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfoRs'
+        "400":
+          description: "Некорректный запрос"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseInfo'
         "404":
-          description: "NOT FOUND USER BY USERNAME"
+          description: "Пользователь не найден"
           content:
             application/json:
               schema:
@@ -51,6 +57,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserInfoRs'
+        "400":
+          description: "Некорректный запрос"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseInfo'
   /user/{username}/update:
     put:
       parameters:
@@ -161,24 +173,36 @@ paths:
           description: "OK"
 components:
   schemas:
-    UpdateUserInfoRq:
-      title: UpdateUserInfoRq
-      description: Информация о пользователе к обновлению
+    ResponseInfo:
+      title: ResponseInfo
+      description: Базовая информация о результатах вызова
       type: object
+      required:
+        - status
       properties:
-        password:
-          type: string
-          description: зашифрованный пароль пользователя
-        fullName:
-          type: string
-          description: полное имя пользователя
-        birthDay:
-          type: date
-          description: точная дата рождения пользователя
-        email:
-          type: string
-          description: почта пользователя
-    UserInfoRs:
+        status:
+          type: boolean
+          description: успешный или нет вызов
+        error:
+          type: object
+          description: информация об ошибке
+          required:
+            - errorMessage
+          properties:
+            errorMessage:
+              type: string
+              description: текст ошибки
+    ErrorResponseInfo:
+      title: ErrorResponseInfo
+      description: Детальная информация об ошибке и ее причинах
+      type: object
+      required:
+        - responseInfo
+      properties:
+        responseInfo:
+          type: object
+          $ref: '#/components/schemas/ResponseInfo'
+    UserInfo:
       title: UserInfo
       description: Информация о пользователе
       type: object
@@ -219,6 +243,33 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AccountDetailInfo'
+    UserInfoRs:
+      title: UserInfoRs
+      description: Результаты вызова и информация о пользователе
+      properties:
+        userInfo:
+          type: object
+          $ref: '#/components/schemas/UserInfo'
+        responseInfo:
+          type: object
+          $ref: '#/components/schemas/ResponseInfo'
+    UpdateUserInfoRq:
+      title: UpdateUserInfoRq
+      description: Информация о пользователе к обновлению
+      type: object
+      properties:
+        password:
+          type: string
+          description: зашифрованный пароль пользователя
+        fullName:
+          type: string
+          description: полное имя пользователя
+        birthDay:
+          type: date
+          description: точная дата рождения пользователя
+        email:
+          type: string
+          description: почта пользователя
     AccountDetailInfo:
       title: AccountDetailInfo
       description: Информация о счете
@@ -269,16 +320,7 @@ components:
           items:
             type: string
             description: роль пользователя
-    ErrorResponseInfo:
-      title: ErrorResponseInfo
-      description: Детальная информация об ошибке и ее причинах
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-          description: Сообщение о причинах ошибки
+
     DeleteAccountRq:
       title: DeleteAccountRq
       description: Запрос на удаление счета пользователя
