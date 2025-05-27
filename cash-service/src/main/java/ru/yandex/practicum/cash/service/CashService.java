@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.account.api.AccountApi;
 import ru.yandex.practicum.account.api.UserApi;
+import ru.yandex.practicum.account.model.UserInfo;
 import ru.yandex.practicum.account.model.UserInfoRs;
 import ru.yandex.practicum.blocker.api.CheckApi;
 import ru.yandex.practicum.blocker.model.CheckOperationRq;
@@ -47,11 +48,11 @@ public class CashService {
 
     }
 
-    private UserInfoRs getUserInfo(String userName) {
-        return userApi.getUserInfoByUsername(userName).block();
+    private UserInfo getUserInfo(String userName) {
+        return userApi.getUserInfoByUsername(userName).map(UserInfoRs::getUserInfo).block();
     }
 
-    private void sendUserNotification(ChangeCashRq requestInfo, UserInfoRs userInfo) {
+    private void sendUserNotification(ChangeCashRq requestInfo, UserInfo userInfo) {
         String subject = "";
         String text = "";
         if (Objects.equals("GET", requestInfo.getAction())) {

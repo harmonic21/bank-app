@@ -85,15 +85,20 @@
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <version>7.12.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>ru.yandex.practicum</groupId>
+                        <artifactId>notification-service-api</artifactId>
+                        <version>1.0.0-SNAPSHOT</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>
-                                ${project.basedir}/src/main/resources/api/server/notification-api.yaml
-                            </inputSpec>
+                            <inputSpec>api/notification-api.yaml</inputSpec>
                             <generatorName>spring</generatorName>
                             <apiPackage>ru.yandex.practicum.notification.api</apiPackage>
                             <modelPackage>ru.yandex.practicum.notification.model</modelPackage>
