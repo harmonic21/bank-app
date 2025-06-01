@@ -8,10 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.account.model.AccountDetailInfo;
 import ru.yandex.practicum.account.model.UserInfo;
 import ru.yandex.practicum.account.model.UserInfoRs;
@@ -38,26 +35,8 @@ public class MainController {
         return "redirect:/main";
     }
 
-    @GetMapping("/main")
-    public String getMainPage(Model model,
-                              Authentication authentication) {
-        var userDetailInfo = userAccountService.getUserInfoDetailByUserName(authentication.getName());
-        var personalInfo = userDetailInfo.map(UserInfoRs::getUserInfo)
-                .map(userDetail -> new PersonalUserInfoDto()
-                        .setName(userDetail.getFullName())
-                        .setBirthDate(userDetail.getBirthDay())
-                        .setEmail(userDetail.getEmail()))
-                .orElse(new PersonalUserInfoDto());
-        var accountsInfo = userDetailInfo.map(UserInfoRs::getUserInfo)
-                .map(UserInfo::getAccounts)
-                .map(this::mapAccountInfo)
-                .orElse(Collections.emptyList());
-        var currency = accountsInfo.stream()
-                .filter(AccountInfoDto::isExists)
-                .map(AccountInfoDto::getCurrency)
-                .toList();
-        model.addAttribute("personalInfo", personalInfo.setAccounts(accountsInfo));
-        model.addAttribute("currency", currency);
+    @RequestMapping(value = "/main", method = {RequestMethod.GET, RequestMethod.POST})
+    public String getMainPage() {
         return "main.html";
     }
 
@@ -71,9 +50,10 @@ public class MainController {
                     .map(ObjectError::getDefaultMessage)
                     .toList();
             model.addAttribute("passwordErrors", errors);
+            return "main.html";
         }
         userAccountService.updateUserPassword(login, passwordInfoDto.getPassword());
-        return "main.html";
+        return "redirect:/main";
     }
 
     @PostMapping("/user/{login}/editUserAccounts")
@@ -111,6 +91,28 @@ public class MainController {
     @ModelAttribute("login")
     public String getLoginFromAuthentication(Authentication authentication) {
         return authentication.getName();
+    }
+
+    @ModelAttribute
+    public void prepareMainModel(Authentication authentication,
+                                 Model model) {
+        var userDetailInfo = userAccountService.getUserInfoDetailByUserName(authentication.getName());
+        var personalInfo = userDetailInfo.map(UserInfoRs::getUserInfo)
+                .map(userDetail -> new PersonalUserInfoDto()
+                        .setName(userDetail.getFullName())
+                        .setBirthDate(userDetail.getBirthDay())
+                        .setEmail(userDetail.getEmail()))
+                .orElse(new PersonalUserInfoDto());
+        var accountsInfo = userDetailInfo.map(UserInfoRs::getUserInfo)
+                .map(UserInfo::getAccounts)
+                .map(this::mapAccountInfo)
+                .orElse(Collections.emptyList());
+        var currency = accountsInfo.stream()
+                .filter(AccountInfoDto::isExists)
+                .map(AccountInfoDto::getCurrency)
+                .toList();
+        model.addAttribute("personalInfo", personalInfo.setAccounts(accountsInfo));
+        model.addAttribute("currency", currency);
     }
 
     private List<AccountInfoDto> mapAccountInfo(List<AccountDetailInfo> accounts) {

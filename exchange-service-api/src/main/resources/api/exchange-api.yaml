@@ -1,0 +1,76 @@
+openapi: 3.0.3
+info:
+  title: Сервис работы с курсами валют
+  version: 1.0.0-SNAPSHOT
+servers:
+  - url: http://localhost:8094
+  - url: http://exchange-service:8080
+paths:
+  /cash/update:
+    post:
+      operationId: UpdateCash
+      summary: Внести или снять наличные средства со счета
+      description: Сервис получает запрос на зачисление или снятие средств. Выполняется обращение к account-service, blocker-service, notification-service
+      tags:
+        - cash
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeCashRq'
+      responses:
+        "200":
+          description: "OK"
+components:
+  schemas:
+    ResponseInfo:
+      title: ResponseInfo
+      description: Базовая информация о результатах вызова
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: boolean
+          description: успешный или нет вызов
+        error:
+          type: object
+          description: информация об ошибке
+          required:
+            - errorMessage
+          properties:
+            errorMessage:
+              type: string
+              description: текст ошибки
+    CurrencyInfo:
+      title: CurrencyInfo
+      description: Информация о курсе валюты
+      type: object
+      required:
+        - name
+        - shortName
+        - value
+      properties:
+        name:
+          type: string
+          description: международное название валюты
+        shortName:
+          type: string
+          description: сокращенное название валюты
+        value:
+          type: number
+          description: текущий курс валюты
+    ExchangeInfoRs:
+      title: ExchangeInfoRs
+      description: Результаты вызова и информация о курсах валют
+      required:
+        - responseInfo
+      properties:
+        userInfo:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/UserInfo'
+        responseInfo:
+          type: object
+          $ref: '#/components/schemas/ResponseInfo'

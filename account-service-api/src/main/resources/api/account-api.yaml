@@ -246,6 +246,8 @@ components:
     UserInfoRs:
       title: UserInfoRs
       description: Результаты вызова и информация о пользователе
+      required:
+        - responseInfo
       properties:
         userInfo:
           type: object
