@@ -6,18 +6,32 @@ servers:
   - url: http://localhost:8094
   - url: http://exchange-service:8080
 paths:
-  /cash/update:
-    post:
-      operationId: UpdateCash
-      summary: Внести или снять наличные средства со счета
-      description: Сервис получает запрос на зачисление или снятие средств. Выполняется обращение к account-service, blocker-service, notification-service
+  /currency/info/actual:
+    get:
+      operationId: ActualCurrencyInfo
+      summary: Получить актуальную информацию о курсах валют
+      description: Сервис возвращает актуальную информацию по текущему курсу валют
       tags:
-        - cash
+        - currency
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrencyInfoRs'
+  /currency/info/update:
+    put:
+      operationId: UpdateCurrencyInfo
+      summary: Обновить информацию по курсам валют
+      description: Сервис получает запрос с информацией о новом курсе валют и сохраняет его у себя в памяти
+      tags:
+        - currency
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChangeCashRq'
+              $ref: '#/components/schemas/UpdateCurrencyRq'
       responses:
         "200":
           description: "OK"
@@ -59,18 +73,29 @@ components:
           description: сокращенное название валюты
         value:
           type: number
-          description: текущий курс валюты
-    ExchangeInfoRs:
-      title: ExchangeInfoRs
+          description: текущий курс валюты (в рублях)
+    CurrencyInfoRs:
+      title: CurrencyInfoRs
       description: Результаты вызова и информация о курсах валют
       required:
         - responseInfo
       properties:
-        userInfo:
+        currencyInfo:
           type: array
           items:
             type: object
-            $ref: '#/components/schemas/UserInfo'
+            $ref: '#/components/schemas/CurrencyInfo'
         responseInfo:
           type: object
           $ref: '#/components/schemas/ResponseInfo'
+    UpdateCurrencyRq:
+      title: UpdateCurrencyRq
+      description: Запрос на обновление информации о курсах валют
+      required:
+        - CurrencyInfo
+      properties:
+        currencyInfo:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/CurrencyInfo'

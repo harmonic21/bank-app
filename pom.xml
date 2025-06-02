@@ -24,6 +24,7 @@
         <module>blocker-service</module>
         <module>notification-service</module>
         <module>exchange-service-api</module>
+        <module>exchange-service</module>
         <module>exchange-generator-service</module>
     </modules>
 </project>

@@ -65,6 +65,11 @@
                         <artifactId>cash-service-api</artifactId>
                         <version>1.0.0-SNAPSHOT</version>
                     </dependency>
+                    <dependency>
+                        <groupId>ru.yandex.practicum</groupId>
+                        <artifactId>exchange-service-api</artifactId>
+                        <version>1.0.0-SNAPSHOT</version>
+                    </dependency>
                 </dependencies>
                 <configuration>
                     <generatorName>java</generatorName>
@@ -106,6 +111,18 @@
                             <generatorName>java</generatorName>
                             <apiPackage>${project.groupId}.cash.api</apiPackage>
                             <modelPackage>${project.groupId}.cash.model</modelPackage>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>exchange-client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>api/exchange-api.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <apiPackage>${project.groupId}.exchange.api</apiPackage>
+                            <modelPackage>${project.groupId}.exchange.model</modelPackage>
                         </configuration>
                     </execution>
                 </executions>
