@@ -1,19 +1,18 @@
 package ru.yandex.practicum.front.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import ru.yandex.practicum.account.api.AccountApi;
 import ru.yandex.practicum.account.api.UserApi;
-import ru.yandex.practicum.account.model.CreateAccountRq;
-import ru.yandex.practicum.account.model.DeleteAccountRq;
-import ru.yandex.practicum.account.model.UpdateUserInfoRq;
-import ru.yandex.practicum.account.model.UserInfoRs;
+import ru.yandex.practicum.account.model.*;
 import ru.yandex.practicum.cash.api.CashApi;
 import ru.yandex.practicum.front.constants.AccountCurrency;
 import ru.yandex.practicum.front.dto.AccountInfoDto;
 import ru.yandex.practicum.front.dto.PersonalUserInfoDto;
+import ru.yandex.practicum.front.dto.ShortUserInfoDto;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -35,6 +34,15 @@ public class UserAccountService {
 
     public void updateUserPassword(String userName, String password) {
         userServiceClient.updateUserInfo(userName, new UpdateUserInfoRq().password(passwordEncoder.encode(password))).block();
+    }
+
+    public List<ShortUserInfoDto> getAllRegisteredUsers(String currentUser) {
+        return userServiceClient.getAllRegisteredUsers()
+                .flatMapIterable(RegisteredUsersRs::getUsers)
+                .filter(user -> ObjectUtils.notEqual(user.getUsername(), currentUser))
+                .map(user -> new ShortUserInfoDto().setLogin(user.getUsername()).setName(user.getFullName()))
+                .collectList()
+                .block();
     }
 
     public void updatePersonalUserInfo(String userName, PersonalUserInfoDto personalInfo) {

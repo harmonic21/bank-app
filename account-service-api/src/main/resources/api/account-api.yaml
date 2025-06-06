@@ -3,8 +3,7 @@ info:
   title: Сервис аккаунтов
   version: 1.0.0-SNAPSHOT
 servers:
-  - url: http://localhost:8090
-  - url: http://account:8080
+  - url: http://localhost:8888/accounts
 paths:
   /user/{username}/info:
     get:
@@ -34,6 +33,26 @@ paths:
                 $ref: '#/components/schemas/ErrorResponseInfo'
         "404":
           description: "Пользователь не найден"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseInfo'
+  /user/registered/list:
+    get:
+      operationId: GetAllRegisteredUsers
+      summary: Получение информации о зарегистрированных пользователях
+      description: Возвращает информацию о пользователях
+      tags:
+        - user
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisteredUsersRs'
+        "400":
+          description: "Некорректный запрос"
           content:
             application/json:
               schema:
@@ -243,6 +262,20 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AccountDetailInfo'
+    ShortUserInfo:
+      title: ShortUserInfo
+      description: Краткая информация о пользователе
+      type: object
+      required:
+        - username
+        - fullName
+      properties:
+        username:
+          type: string
+          description: уникальное имя пользователя
+        fullName:
+          type: string
+          description: полное имя пользователя
     UserInfoRs:
       title: UserInfoRs
       description: Результаты вызова и информация о пользователе
@@ -252,6 +285,20 @@ components:
         userInfo:
           type: object
           $ref: '#/components/schemas/UserInfo'
+        responseInfo:
+          type: object
+          $ref: '#/components/schemas/ResponseInfo'
+    RegisteredUsersRs:
+      title: RegisteredUsersRs
+      description: Результаты вызова и информация о зарегистрированных пользователях
+      required:
+        - responseInfo
+      properties:
+        users:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/ShortUserInfo'
         responseInfo:
           type: object
           $ref: '#/components/schemas/ResponseInfo'

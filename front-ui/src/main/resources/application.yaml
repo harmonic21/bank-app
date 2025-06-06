@@ -1,0 +1,11 @@
+spring:
+  config:
+    import: "optional:consul:"
+  application:
+    name: front-ui
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      config:
+        enabled: true

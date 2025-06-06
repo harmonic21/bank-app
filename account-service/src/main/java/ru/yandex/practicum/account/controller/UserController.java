@@ -31,4 +31,11 @@ public class UserController implements UserApi {
         UserInfo result = userService.updateUser(username, updateUserInfoRq);
         return ResponseEntity.ok(new UserInfoRs().userInfo(result).responseInfo(new ResponseInfo(true)));
     }
+
+    @Override
+    public ResponseEntity<RegisteredUsersRs> getAllRegisteredUsers() {
+        return ResponseEntity.ok(
+                new RegisteredUsersRs(new ResponseInfo(true)).users(userService.getAllRegisteredUsers())
+        );
+    }
 }

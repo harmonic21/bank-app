@@ -12,3 +12,8 @@ services:
       - ./db-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
+  external-configuration:
+    image: consul:1.15.4
+    container_name: external-configuration
+    ports:
+      - "8500:8500"

@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.account.exceptions.UserNotFoundException;
 import ru.yandex.practicum.account.mapper.UserInfoMapper;
+import ru.yandex.practicum.account.model.ShortUserInfo;
 import ru.yandex.practicum.account.model.UpdateUserInfoRq;
 import ru.yandex.practicum.account.model.UserInfo;
 import ru.yandex.practicum.account.model.UserRegisterInfo;
 import ru.yandex.practicum.account.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,5 +47,11 @@ public class UserService {
                         () -> {throw new UserNotFoundException(userName);}
                 );
         return findByUsername(userName);
+    }
+
+    public List<ShortUserInfo> getAllRegisteredUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new ShortUserInfo(user.getUsername(), user.getFullName()))
+                .toList();
     }
 }

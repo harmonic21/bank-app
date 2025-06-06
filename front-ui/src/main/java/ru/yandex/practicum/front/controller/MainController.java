@@ -113,6 +113,7 @@ public class MainController {
                 .toList();
         model.addAttribute("personalInfo", personalInfo.setAccounts(accountsInfo));
         model.addAttribute("currency", currency);
+        model.addAttribute("users", userAccountService.getAllRegisteredUsers(authentication.getName()));
     }
 
     private List<AccountInfoDto> mapAccountInfo(List<AccountDetailInfo> accounts) {
