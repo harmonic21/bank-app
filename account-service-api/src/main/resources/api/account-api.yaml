@@ -14,6 +14,8 @@ paths:
           schema:
             type: string
       operationId: GetUserInfoByUsername
+      security:
+        - bearerAuth: []
       summary: Получение информации о пользователе по его имени
       description: Возвращает информацию о пользователе
       tags:
@@ -41,6 +43,8 @@ paths:
     get:
       operationId: GetAllRegisteredUsers
       summary: Получение информации о зарегистрированных пользователях
+      security:
+        - bearerAuth: [ ]
       description: Возвращает информацию о пользователях
       tags:
         - user
@@ -61,6 +65,8 @@ paths:
     post:
       operationId: RegisterNewUser
       summary: Регистрация нового пользователя в системе
+      security:
+        - bearerAuth: [ ]
       description: Данные из UI формы передаются в систему и сохраняются в БД
       tags:
         - user
@@ -92,6 +98,8 @@ paths:
             type: string
       operationId: UpdateUserInfo
       summary: Обновить информацию о пользователе
+      security:
+        - bearerAuth: [ ]
       description: Данные из UI формы передаются в систему и сохраняются в БД
       tags:
         - user
@@ -117,6 +125,8 @@ paths:
             type: string
       operationId: DeleteUserAccount
       summary: Удалить счет пользователя
+      security:
+        - bearerAuth: [ ]
       description: Данные из UI формы передаются в систему и после проверки допустимости действия - счет удаляется из БД
       tags:
         - account
@@ -138,6 +148,8 @@ paths:
             type: string
       operationId: CreateUserAccount
       summary: Создать новый счет пользователя
+      security:
+        - bearerAuth: [ ]
       description: Данные из UI формы передаются в систему и после проверки допустимости действия - счет создается в БД
       tags:
         - account
@@ -159,6 +171,8 @@ paths:
             type: string
       operationId: AddCashToAccount
       summary: Внести наличные средства на счет
+      security:
+        - bearerAuth: [ ]
       description: Данные из UI формы передаются в систему и после проверки допустимости действия - средства зачисляются на счет
       tags:
         - account
@@ -179,6 +193,8 @@ paths:
             type: string
       operationId: GetCashFromAccount
       summary: Снять наличные средства со счета
+      security:
+        - bearerAuth: [ ]
       description: Данные из UI формы передаются в систему и после проверки допустимости действия - средства списываются со счета
       tags:
         - account
@@ -191,6 +207,11 @@ paths:
         "200":
           description: "OK"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     ResponseInfo:
       title: ResponseInfo

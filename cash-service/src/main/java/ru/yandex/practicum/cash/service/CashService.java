@@ -1,6 +1,7 @@
 package ru.yandex.practicum.cash.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.account.api.AccountApi;
 import ru.yandex.practicum.account.api.UserApi;
@@ -16,6 +17,7 @@ import ru.yandex.practicum.notification.model.SendNotificationRq;
 
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CashService {
@@ -67,6 +69,9 @@ public class CashService {
                         .userMail(userInfo.getEmail())
                         .subject(subject.formatted(requestInfo.getCurrency()))
                         .text(text.formatted(userInfo.getFullName(), requestInfo.getCurrency(), requestInfo.getValue()))
-        ).block();
+        )
+                .doOnError(t -> log.error("При попытке отправить уведомление получена ошибка: {}", t.getMessage()))
+                .onErrorComplete()
+                .block();
     }
 }

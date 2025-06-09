@@ -14,6 +14,30 @@ spring:
                 - Path=/accounts/**
               filters:
                 - RewritePath=/accounts/?(?<segment>.*), /$\{segment}
+            - id: blocker-service-route
+              uri: http://127.0.0.1:8091
+              predicates:
+                - Path=/blocker/**
+              filters:
+                - RewritePath=/blocker/?(?<segment>.*), /$\{segment}
+            - id: cash-service-route
+              uri: http://127.0.0.1:8092
+              predicates:
+                - Path=/cash/**
+              filters:
+                - RewritePath=/cash/?(?<segment>.*), /$\{segment}
+            - id: exchange-service-route
+              uri: http://127.0.0.1:8093
+              predicates:
+                - Path=/exchange/**
+              filters:
+                - RewritePath=/exchange/?(?<segment>.*), /$\{segment}
+            - id: notification-service-route
+              uri: http://127.0.0.1:8094
+              predicates:
+                - Path=/notifications/**
+              filters:
+                - RewritePath=/notifications/?(?<segment>.*), /$\{segment}
 logging:
   level:
     reactor:

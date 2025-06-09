@@ -3,13 +3,14 @@ info:
   title: Сервис работы с наличными средствами
   version: 1.0.0-SNAPSHOT
 servers:
-  - url: http://localhost:8091
-  - url: http://cash-service:8080
+  - url: http://localhost:8888/cash
 paths:
   /cash/update:
     post:
       operationId: UpdateCash
       summary: Внести или снять наличные средства со счета
+      security:
+        - bearerAuth: [ ]
       description: Сервис получает запрос на зачисление или снятие средств. Выполняется обращение к account-service, blocker-service, notification-service
       tags:
         - cash
@@ -22,6 +23,11 @@ paths:
         "200":
           description: "OK"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     ErrorResponseInfo:
       title: ErrorResponseInfo

@@ -1,2 +1,11 @@
 server:
-  port: 8092
+  port: 8091
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
+keycloak-custom:
+  host: localhost
+  port: 9090

@@ -3,8 +3,7 @@ info:
   title: Сервис работы с курсами валют
   version: 1.0.0-SNAPSHOT
 servers:
-  - url: http://localhost:8094
-  - url: http://exchange-service:8080
+  - url: http://localhost:8888/exchange
 paths:
   /currency/info/actual:
     get:

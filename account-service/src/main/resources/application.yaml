@@ -8,5 +8,18 @@ spring:
     properties:
       hibernate:
         default_schema: bank_account
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
 server:
   port: 8090
+keycloak-custom:
+  host: localhost
+  port: 9090
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG

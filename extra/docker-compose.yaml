@@ -12,8 +12,27 @@ services:
       - ./db-scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
+  keycloack:
+    image: quay.io/keycloak/keycloak:latest
+    command:
+      - start-dev
+    container_name: keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgredb:5432/yandex_practicum
+      KC_DB_USERNAME: bank_app_user
+      KC_DB_PASSWORD: changeit
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    links:
+      - "bank_db:postgredb"
+    ports:
+      - "9090:8080"
+    depends_on:
+      - bank_db
   external-configuration:
-    image: consul:1.15.4
+    build:
+      context: ./consul
     container_name: external-configuration
     ports:
       - "8500:8500"

@@ -3,13 +3,14 @@ info:
   title: Сервис работы с уведомлениями
   version: 1.0.0-SNAPSHOT
 servers:
-  - url: http://localhost:8093
-  - url: http://notification-service:8080
+  - url: http://localhost:8888/notifications
 paths:
   /notification/send:
     post:
       operationId: SendNotification
       summary: Отправить уведомление по операции
+      security:
+        - bearerAuth: [ ]
       description: Сервис получает запрос на отправку уведомления и выполняет запрос к почтовому серверу
       tags:
         - notification
@@ -22,6 +23,11 @@ paths:
         "200":
           description: "OK"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     ErrorResponseInfo:
       title: ErrorResponseInfo

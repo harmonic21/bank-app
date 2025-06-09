@@ -1,2 +1,17 @@
+spring:
+  config:
+    import: "optional:consul:"
+  application:
+    name: exchange-generator-service
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      config:
+        enabled: true
 server:
   port: 8099
+rest:
+  client:
+    exchange:
+      url: http://localhost:8888/exchange

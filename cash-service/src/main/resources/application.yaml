@@ -1,2 +1,46 @@
+spring:
+  config:
+    import: "optional:consul:"
+  application:
+    name: cash-service
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      config:
+        enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
+      client:
+        provider:
+          keycloak:
+            authorization-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/auth
+            token-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/token
+            user-info-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/certs
+        registration:
+          cash-service:
+            authorizationGrantType: client_credentials
+            provider: keycloak
+            client-id: cash-service
+            client-secret: BXxTmkZ5u6h7KFkLhT3tehJlB7AKNtnp
+            redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
+            scope: profile
+            clientAuthenticationMethod: client_secret_post
 server:
-  port: 8091
+  port: 8092
+rest:
+  client:
+    blocker:
+      url: http://localhost:8888/blocker
+    notification:
+      url: http://localhost:8888/notifications
+    accounts:
+      url: http://localhost:8888/accounts
+keycloak-custom:
+  host: localhost
+  port: 9090

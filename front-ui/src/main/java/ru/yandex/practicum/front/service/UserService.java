@@ -1,6 +1,7 @@
 package ru.yandex.practicum.front.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,6 +13,7 @@ import ru.yandex.practicum.account.model.UserInfoRs;
 import ru.yandex.practicum.front.error.IntegrationErrorException;
 import ru.yandex.practicum.front.error.UserNotFoundException;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
@@ -37,7 +39,7 @@ public class UserService implements UserDetailsService {
         if (throwable instanceof WebClientResponseException.NotFound e) {
             return new UserNotFoundException(userName);
         } else {
-            return new IntegrationErrorException("acount service");
+            return new IntegrationErrorException("account service");
         }
     }
 }
