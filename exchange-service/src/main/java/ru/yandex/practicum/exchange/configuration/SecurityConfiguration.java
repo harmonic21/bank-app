@@ -1,4 +1,4 @@
-package ru.yandex.practicum.notification.configuration;
+package ru.yandex.practicum.exchange.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,13 +21,14 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
         return security
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(HttpMethod.POST, "/notification/send").hasAuthority("SEND_NOTIFICATION")
+                        .requestMatchers(HttpMethod.GET, "/currency/info/actual").hasAuthority("READ_CURRENCY_VALUE")
+                        .requestMatchers(HttpMethod.PUT, "/currency/info/update").hasAuthority("CHANGE_CURRENCY_VALUE")
                 )
                 .oauth2ResourceServer(customizer -> customizer
                         .jwt(jwtCustomizer -> {
                             JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
                             jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> Optional.ofNullable(jwt.getClaim("resource_access"))
-                                    .map(access -> ((Map<String, Object>)access).get("notification-service"))
+                                    .map(access -> ((Map<String, Object>)access).get("exchange-service"))
                                     .map(accountsAccess -> ((Map<String, Object>)accountsAccess).get("roles"))
                                     .map(roles -> (List<String>) roles)
                                     .stream()

@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: gateway-service
+  mvc:
+    log-request-details: true
+  codec:
+    log-request-details: true
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: account-service-route
+              uri: http://account-service:8080
+              predicates:
+                - Path=/accounts/**
+              filters:
+                - RewritePath=/accounts/?(?<segment>.*), /$\{segment}
+            - id: blocker-service-route
+              uri: http://blocker-service:8080
+              predicates:
+                - Path=/blocker/**
+              filters:
+                - RewritePath=/blocker/?(?<segment>.*), /$\{segment}
+            - id: cash-service-route
+              uri: http://cash-service:8080
+              predicates:
+                - Path=/cash/**
+              filters:
+                - RewritePath=/cash/?(?<segment>.*), /$\{segment}
+            - id: exchange-service-route
+              uri: http://exchange-service:8080
+              predicates:
+                - Path=/exchange/**
+              filters:
+                - RewritePath=/exchange/?(?<segment>.*), /$\{segment}
+            - id: notification-service-route
+              uri: http://notification-service:8080
+              predicates:
+                - Path=/notifications/**
+              filters:
+                - RewritePath=/notifications/?(?<segment>.*), /$\{segment}
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE

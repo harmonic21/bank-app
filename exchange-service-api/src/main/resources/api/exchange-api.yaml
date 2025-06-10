@@ -9,6 +9,8 @@ paths:
     get:
       operationId: ActualCurrencyInfo
       summary: Получить актуальную информацию о курсах валют
+      security:
+        - bearerAuth: [ ]
       description: Сервис возвращает актуальную информацию по текущему курсу валют
       tags:
         - currency
@@ -23,6 +25,8 @@ paths:
     put:
       operationId: UpdateCurrencyInfo
       summary: Обновить информацию по курсам валют
+      security:
+        - bearerAuth: [ ]
       description: Сервис получает запрос с информацией о новом курсе валют и сохраняет его у себя в памяти
       tags:
         - currency
@@ -35,6 +39,11 @@ paths:
         "200":
           description: "OK"
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     ResponseInfo:
       title: ResponseInfo

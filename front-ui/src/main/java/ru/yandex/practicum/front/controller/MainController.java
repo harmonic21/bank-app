@@ -16,6 +16,7 @@ import ru.yandex.practicum.front.constants.AccountCurrency;
 import ru.yandex.practicum.front.dto.AccountInfoDto;
 import ru.yandex.practicum.front.dto.PasswordInfoDto;
 import ru.yandex.practicum.front.dto.PersonalUserInfoDto;
+import ru.yandex.practicum.front.service.TransferService;
 import ru.yandex.practicum.front.service.UserAccountService;
 
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ import java.util.Objects;
 public class MainController {
 
     private final UserAccountService userAccountService;
+    private final TransferService transferService;
 
     @GetMapping("/")
     public String getIndexPage() {
@@ -75,11 +77,30 @@ public class MainController {
     @PostMapping("/user/{login}/сash")
     public String changeCashOnAccount(@PathVariable(name = "login") String login,
                                       @ModelAttribute(name = "action") String action,
-                                      @ModelAttribute(name = "currency") String currency,
                                       @ModelAttribute(name = "value") BigDecimal value,
+                                      @ModelAttribute(name = "cashCurrency") String cashCurrency,
                                       BindingResult bindingResult,
                                       Model model) {
-        userAccountService.updateCash(action, login, currency, value);
+        userAccountService.updateCash(action, login, cashCurrency, value);
+        return "redirect:/";
+    }
+
+    @PostMapping("/user/{login}/transfer")
+    public String transferMoney(@PathVariable(name = "login") String login,
+                                @ModelAttribute(name = "from_currency") String fromCurrency,
+                                @ModelAttribute(name = "to_currency") String toCurrency,
+                                @ModelAttribute(name = "value") BigDecimal transferValue,
+                                @ModelAttribute(name = "to_login") String toLogin,
+                                BindingResult bindingResult,
+                                Model model) {
+        if (Objects.equals(fromCurrency, toCurrency)) {
+            model.addAttribute(
+                    "transferErrors",
+                    List.of("Указаны одинаковые валюты перевода. Перевод осуществляется между разными")
+            );
+            return "main.html";
+        }
+        transferService.doTransfer(login, toLogin, fromCurrency, toCurrency, transferValue);
         return "redirect:/";
     }
 

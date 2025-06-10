@@ -1,5 +1,6 @@
 package ru.yandex.practicum.account.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Configuration
 public class SecurityConfiguration {
 
@@ -39,6 +41,7 @@ public class SecurityConfiguration {
                                         .map(roles -> (List<String>) roles)
                                         .stream()
                                         .flatMap(Collection::stream)
+                                    .peek(role -> log.info(role))
                                         .map(SimpleGrantedAuthority::new)
                                         .map(GrantedAuthority.class::cast)
                                         .toList());

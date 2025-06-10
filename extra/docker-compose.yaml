@@ -16,7 +16,7 @@ services:
     image: quay.io/keycloak/keycloak:latest
     command:
       - start-dev
-    container_name: keycloak
+    container_name: keycloack
     environment:
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgredb:5432/yandex_practicum
@@ -36,3 +36,141 @@ services:
     container_name: external-configuration
     ports:
       - "8500:8500"
+  gateway-service:
+    image: openjdk:21-oracle
+    container_name: gateway-service
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../gateway-service/target:/app
+      - ./startup-config/gateway-service:/app/config
+    ports:
+      - "8888:8080"
+    command: java -jar /app/gateway-service.jar
+    links:
+      - "account-service:account-service"
+  front-ui:
+    image: openjdk:21-oracle
+    container_name: front-ui
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../front-ui/target:/app
+      - ./startup-config/front-ui:/app/config
+    ports:
+      - "8080:8080"
+    command: java -jar /app/front-ui.jar
+    depends_on:
+      - gateway-service
+      - external-configuration
+      - keycloack
+    links:
+      - "gateway-service:gateway-service"
+      - "external-configuration:consul"
+      - "keycloack:keycloack"
+  account-service:
+    image: openjdk:21-oracle
+    container_name: account-service
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../account-service/target:/app
+      - ./startup-config/account-service:/app/config
+    ports:
+      - "8090:8080"
+    command: java -jar /app/account-service.jar
+    depends_on:
+      - external-configuration
+      - keycloack
+      - bank_db
+    links:
+      - "external-configuration:consul"
+      - "keycloack:keycloack"
+      - "bank_db:bank_db"
+  exchange-service:
+    image: openjdk:21-oracle
+    container_name: exchange-service
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../exchange-service/target:/app
+      - ./startup-config/exchange-service:/app/config
+    ports:
+      - "8091:8080"
+    command: java -jar /app/exchange-service.jar
+    depends_on:
+      - keycloack
+    links:
+      - "keycloack:keycloack"
+  exchange-generator-service:
+    image: openjdk:21-oracle
+    container_name: exchange-generator-service
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../exchange-generator-service/target:/app
+      - ./startup-config/exchange-generator-service:/app/config
+    ports:
+      - "8092:8080"
+    command: java -jar /app/exchange-generator-service.jar
+    depends_on:
+      - external-configuration
+      - keycloack
+      - gateway-service
+    links:
+      - "external-configuration:consul"
+      - "keycloack:keycloack"
+      - "gateway-service:gateway-service"
+  cash-service:
+    image: openjdk:21-oracle
+    container_name: cash-service
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../cash-service/target:/app
+      - ./startup-config/cash-service:/app/config
+    ports:
+      - "8093:8080"
+    command: java -jar /app/cash-service.jar
+    depends_on:
+      - external-configuration
+      - keycloack
+      - gateway-service
+    links:
+      - "external-configuration:consul"
+      - "keycloack:keycloack"
+      - "gateway-service:gateway-service"
+  blocker-service:
+    image: openjdk:21-oracle
+    container_name: blocker-service
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../blocker-service/target:/app
+      - ./startup-config/blocker-service:/app/config
+    ports:
+      - "8094:8080"
+    command: java -jar /app/blocker-service.jar
+    depends_on:
+      - keycloack
+    links:
+      - "keycloack:keycloack"
+  notification-service:
+    image: openjdk:21-oracle
+    container_name: notification-service
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../notification-service/target:/app
+      - ./startup-config/notification-service:/app/config
+    ports:
+      - "8095:8080"
+    command: java -jar /app/notification-service.jar
+    depends_on:
+      - external-configuration
+      - keycloack
+      - gateway-service
+    links:
+      - "external-configuration:consul"
+      - "keycloack:keycloack"
+      - "gateway-service:gateway-service"

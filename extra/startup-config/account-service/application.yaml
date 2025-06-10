@@ -1,18 +1,18 @@
 spring:
+  mvc:
+    log-request-details: true
   config:
     import: "optional:consul:"
   application:
     name: account-service
   cloud:
     consul:
-      host: localhost
+      host: consul
       port: 8500
       config:
         enabled: true
   datasource:
-    url: jdbc:postgresql://localhost:5432/yandex_practicum
-    username: bank_app_user
-    password: changeit
+    url: jdbc:postgresql://bank_db:5432/yandex_practicum
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
@@ -24,10 +24,10 @@ spring:
         jwt:
           issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
 server:
-  port: 8090
+  port: 8080
 keycloak-custom:
-  host: localhost
-  port: 9090
+  host: keycloack
+  port: 8080
 logging:
   level:
     org:

@@ -1,5 +1,3 @@
-server:
-  port: 8093
 spring:
   security:
     oauth2:
@@ -7,5 +5,5 @@ spring:
         jwt:
           issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
 keycloak-custom:
-  host: localhost
-  port: 9090
+  host: keycloack
+  port: 8080

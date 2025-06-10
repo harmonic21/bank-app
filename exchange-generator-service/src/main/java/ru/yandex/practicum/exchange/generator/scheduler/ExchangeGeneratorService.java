@@ -1,6 +1,7 @@
 package ru.yandex.practicum.exchange.generator.scheduler;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.exchange.api.CurrencyApi;
@@ -18,7 +19,7 @@ public class ExchangeGeneratorService {
     private static final CurrencyInfo RUB_INFO = new CurrencyInfo().name("Рубль").shortName("RUB").value(BigDecimal.ONE);
     private static final Random RANDOM = new Random();
 
-    private final CurrencyApi currencyApi;
+    private final ApplicationContext applicationContext;
 
     @Scheduled(fixedDelay = 1L, timeUnit = TimeUnit.SECONDS)
     public void generateActualExchangeInfo() {
@@ -26,6 +27,6 @@ public class ExchangeGeneratorService {
                 .addCurrencyInfoItem(RUB_INFO)
                 .addCurrencyInfoItem(new CurrencyInfo().name("Юань").shortName("CNY").value(BigDecimal.valueOf(RANDOM.nextDouble(100))))
                 .addCurrencyInfoItem(new CurrencyInfo().name("Доллар").shortName("USD").value(BigDecimal.valueOf(RANDOM.nextDouble(100))));
-        currencyApi.updateCurrencyInfo(request).block();
+        ((CurrencyApi)applicationContext.getBean("currencyApi")).updateCurrencyInfo(request).block();
     }
 }
