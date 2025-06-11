@@ -33,7 +33,7 @@ public class UserEntity {
     private String email;
     @Column(name = "roles", nullable = false)
     private String[] roles;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserAccountEntity> accounts = new HashSet<>();
 
     public void addAccount(UserAccountEntity userAccountEntity) {

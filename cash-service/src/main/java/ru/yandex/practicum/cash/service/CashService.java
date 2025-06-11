@@ -48,7 +48,6 @@ public class CashService {
                                 RestClientUtility::isWebClientResponseException,
                                 t -> Mono.just(RestClientUtility.getResponseBodyFromError(t, ResponseInfo.class))
                         ).block();
-                System.out.println(result);
                 if (BooleanUtils.isFalse(result.getStatus())) {
                     throw new OperationFailedException(result.getError().getErrorMessage());
                 }

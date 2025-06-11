@@ -21,9 +21,6 @@ public class CurrencyInfoStorage {
     }
 
     public BigDecimal exchangeCurrency(String from, String to, BigDecimal value) {
-        System.out.println(CURRENCY_INFO.values());
-        System.out.println(from);
-        System.out.println(to);
         var rub = exchangeToRub(from, value);
         return exchangeTo(to, rub);
     }

@@ -2,6 +2,86 @@
   {
     "key": "config/front-ui/rest/client/accounts/url",
     "flags": 0,
-    "value": "aHR0cDovL2xvY2FsaG9zdDo4ODg4L2FjY291bnRz"
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2FjY291bnRz"
+  },
+  {
+    "key": "config/front-ui/rest/client/cash/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2Nhc2g="
+  },
+  {
+    "key": "config/front-ui/rest/client/exchange/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2V4Y2hhbmdl"
+  },
+  {
+    "key": "config/front-ui/rest/client/transfer/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL3RyYW5zZmVy"
+  },
+  {
+    "key": "config/account-service/spring/datasource/username",
+    "flags": 0,
+    "value": "YmFua19hcHBfdXNlcg=="
+  },
+  {
+    "key": "config/account-service/spring/datasource/password",
+    "flags": 0,
+    "value": "Y2hhbmdlaXQ="
+  },
+  {
+    "key": "config/exchange-generator-service/rest/client/exchange/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2V4Y2hhbmdl"
+  },
+  {
+    "key": "config/cash-service/rest/client/accounts/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2FjY291bnRz"
+  },
+  {
+    "key": "config/cash-service/rest/client/blocker/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2Jsb2NrZXI="
+  },
+  {
+    "key": "config/cash-service/rest/client/notification/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL25vdGlmaWNhdGlvbnM="
+  },
+  {
+    "key": "config/notification-service/notification/mail/tech-mail-box",
+    "flags": 0,
+    "value": "ZW1wdHk="
+  },
+  {
+    "key": "config/notification-service/spring/mail/username",
+    "flags": 0,
+    "value": "ZW1wdHk="
+  },
+  {
+    "key": "config/notification-service/spring/mail/password",
+    "flags": 0,
+    "value": "ZW1wdHk="
+  },
+  {
+    "key": "config/transfer-service/rest/client/accounts/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2FjY291bnRz"
+  },
+  {
+    "key": "config/transfer-service/rest/client/blocker/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2Jsb2NrZXI="
+  },
+  {
+    "key": "config/transfer-service/rest/client/notification/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL25vdGlmaWNhdGlvbnM="
+  },
+  {
+    "key": "config/transfer-service/rest/client/exchange/url",
+    "flags": 0,
+    "value": "aHR0cDovL2dhdGV3YXktc2VydmljZTo4MDgwL2V4Y2hhbmdl"
   }
 ]

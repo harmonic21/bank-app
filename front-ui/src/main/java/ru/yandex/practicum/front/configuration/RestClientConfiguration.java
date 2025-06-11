@@ -1,6 +1,5 @@
 package ru.yandex.practicum.front.configuration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,6 @@ import ru.yandex.practicum.cash.api.CashApi;
 import ru.yandex.practicum.exchange.api.CurrencyApi;
 import ru.yandex.practicum.transfer.api.TransferApi;
 
-@Slf4j
 @Configuration
 public class RestClientConfiguration {
 
@@ -26,8 +24,6 @@ public class RestClientConfiguration {
                 .principal("system")
                 .build();
         ApiClient client = new ApiClient();
-        log.info(accountsUrl);
-        log.info(manager.authorize(request).getAccessToken().getTokenValue());
         client.setBasePath(accountsUrl);
         client.setBearerToken(manager.authorize(request).getAccessToken().getTokenValue());
         return client;
@@ -40,7 +36,6 @@ public class RestClientConfiguration {
         OAuth2AuthorizeRequest request = OAuth2AuthorizeRequest.withClientRegistrationId("front-ui")
                 .principal("system")
                 .build();
-        log.info(cashUrl);
         ru.yandex.practicum.cash.ApiClient client = new ru.yandex.practicum.cash.ApiClient();
         client.setBasePath(cashUrl);
         client.setBearerToken(manager.authorize(request).getAccessToken().getTokenValue());

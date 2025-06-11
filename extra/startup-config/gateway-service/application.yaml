@@ -46,11 +46,3 @@ spring:
                 - Path=/transfer/**
               filters:
                 - RewritePath=/transfer/?(?<segment>.*), /$\{segment}
-logging:
-  level:
-    reactor:
-      netty: INFO
-    org:
-      springframework:
-        cloud:
-          gateway: TRACE

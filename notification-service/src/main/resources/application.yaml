@@ -1,0 +1,35 @@
+server:
+  port: 8094
+spring:
+  config:
+    import: "optional:consul:"
+  application:
+    name: notification-service
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      config:
+        enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+notification:
+  mail:
+    tech-mail-box:
+keycloak-custom:
+  host: localhost
+  port: 9090
