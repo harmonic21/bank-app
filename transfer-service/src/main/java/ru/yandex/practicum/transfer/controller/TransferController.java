@@ -19,6 +19,6 @@ public class TransferController implements TransferApi {
                                                      String toUsername,
                                                      TransferCashRq transferCashRq) {
         transferService.transfer(fromUsername, toUsername, transferCashRq);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ResponseInfo(true));
     }
 }
