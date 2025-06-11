@@ -12,6 +12,7 @@ import ru.yandex.practicum.account.api.AccountApi;
 import ru.yandex.practicum.account.api.UserApi;
 import ru.yandex.practicum.cash.api.CashApi;
 import ru.yandex.practicum.exchange.api.CurrencyApi;
+import ru.yandex.practicum.transfer.api.TransferApi;
 
 @Slf4j
 @Configuration
@@ -60,6 +61,19 @@ public class RestClientConfiguration {
     }
 
     @Bean
+    @RequestScope
+    public ru.yandex.practicum.transfer.ApiClient transferApiClient(OAuth2AuthorizedClientManager manager,
+                                                                    @Value("${rest.client.transfer.url}") String transferUrl) {
+        OAuth2AuthorizeRequest request = OAuth2AuthorizeRequest.withClientRegistrationId("front-ui")
+                .principal("system")
+                .build();
+        ru.yandex.practicum.transfer.ApiClient client = new ru.yandex.practicum.transfer.ApiClient();
+        client.setBasePath(transferUrl);
+        client.setBearerToken(manager.authorize(request).getAccessToken().getTokenValue());
+        return client;
+    }
+
+    @Bean
     public UserApi userServiceClient(ApiClient accountsApiClient) {
         return new UserApi(accountsApiClient);
     }
@@ -77,5 +91,10 @@ public class RestClientConfiguration {
     @Bean
     public CurrencyApi currencyApi(ru.yandex.practicum.exchange.ApiClient exchangeApiClient) {
         return new CurrencyApi(exchangeApiClient);
+    }
+
+    @Bean
+    public TransferApi transferApi(ru.yandex.practicum.transfer.ApiClient transferApiClient) {
+        return new TransferApi(transferApiClient);
     }
 }

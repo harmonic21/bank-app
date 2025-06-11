@@ -9,10 +9,12 @@ import ru.yandex.practicum.account.api.AccountApi;
 import ru.yandex.practicum.account.api.UserApi;
 import ru.yandex.practicum.account.model.*;
 import ru.yandex.practicum.cash.api.CashApi;
+import ru.yandex.practicum.cash.model.ResponseInfo;
 import ru.yandex.practicum.front.constants.AccountCurrency;
 import ru.yandex.practicum.front.dto.AccountInfoDto;
 import ru.yandex.practicum.front.dto.PersonalUserInfoDto;
 import ru.yandex.practicum.front.dto.ShortUserInfoDto;
+import ru.yandex.practicum.front.util.RestClientUtility;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -58,14 +60,19 @@ public class UserAccountService {
         createOrDeleteAccounts(userName, personalInfo.getAccounts());
     }
 
-    public void updateCash(String action, String userName, String currency, BigDecimal value) {
-        cashClient.updateCash(
-                new ru.yandex.practicum.cash.model.ChangeCashRq()
-                        .userName(userName)
-                        .action(action)
-                        .currency(currency)
-                        .value(value)
-        ).block();
+    public ResponseInfo updateCash(String action, String userName, String currency, BigDecimal value) {
+        return cashClient.updateCash(
+                        new ru.yandex.practicum.cash.model.ChangeCashRq()
+                                .userName(userName)
+                                .action(action)
+                                .currency(currency)
+                                .value(value)
+                )
+                .onErrorResume(
+                        RestClientUtility::isWebClientResponseException,
+                        t -> Mono.just(RestClientUtility.getResponseBodyFromError(t, ResponseInfo.class))
+                )
+                .block();
     }
 
     private void createOrDeleteAccounts(String userName, List<AccountInfoDto> accounts) {

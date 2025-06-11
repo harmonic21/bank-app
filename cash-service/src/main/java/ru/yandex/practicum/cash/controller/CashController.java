@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.cash.api.CashApi;
 import ru.yandex.practicum.cash.model.ChangeCashRq;
+import ru.yandex.practicum.cash.model.ResponseInfo;
 import ru.yandex.practicum.cash.service.CashService;
 
 @RestController
@@ -14,8 +15,8 @@ public class CashController implements CashApi {
     private final CashService cashService;
 
     @Override
-    public ResponseEntity<Void> updateCash(ChangeCashRq changeCashRq) {
+    public ResponseEntity<ResponseInfo> updateCash(ChangeCashRq changeCashRq) {
         cashService.updateCash(changeCashRq);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ResponseInfo(true));
     }
 }

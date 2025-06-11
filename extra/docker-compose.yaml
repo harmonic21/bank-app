@@ -174,3 +174,22 @@ services:
       - "external-configuration:consul"
       - "keycloack:keycloack"
       - "gateway-service:gateway-service"
+  transfer-service:
+    image: openjdk:21-oracle
+    container_name: transfer-service
+    environment:
+      SPRING_CONFIG_LOCATION: /app/config/application.yaml
+    volumes:
+      - ../transfer-service/target:/app
+      - ./startup-config/transfer-service:/app/config
+    ports:
+      - "8096:8080"
+    command: java -jar /app/transfer-service.jar
+    depends_on:
+      - external-configuration
+      - keycloack
+      - gateway-service
+    links:
+      - "external-configuration:consul"
+      - "keycloack:keycloack"
+      - "gateway-service:gateway-service"

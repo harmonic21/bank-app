@@ -85,6 +85,11 @@
                         <artifactId>exchange-service-api</artifactId>
                         <version>1.0.0-SNAPSHOT</version>
                     </dependency>
+                    <dependency>
+                        <groupId>ru.yandex.practicum</groupId>
+                        <artifactId>transfer-service-api</artifactId>
+                        <version>1.0.0-SNAPSHOT</version>
+                    </dependency>
                 </dependencies>
                 <configuration>
                     <generatorName>java</generatorName>
@@ -138,6 +143,18 @@
                             <generatorName>java</generatorName>
                             <apiPackage>${project.groupId}.exchange.api</apiPackage>
                             <modelPackage>${project.groupId}.exchange.model</modelPackage>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>transfer-client</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>api/transfer-api.yaml</inputSpec>
+                            <generatorName>java</generatorName>
+                            <apiPackage>${project.groupId}.transfer.api</apiPackage>
+                            <modelPackage>${project.groupId}.transfer.model</modelPackage>
                         </configuration>
                     </execution>
                 </executions>

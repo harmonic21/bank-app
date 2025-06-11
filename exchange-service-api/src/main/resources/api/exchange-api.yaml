@@ -38,6 +38,26 @@ paths:
       responses:
         "200":
           description: "OK"
+  /currency/exchange:
+    post:
+      operationId: ExchangeCurrency
+      summary: Перевод валют по текущему курсу
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - currency
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExchangeCurrencyRq'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeCurrencyRs'
 components:
   securitySchemes:
     bearerAuth:
@@ -107,3 +127,33 @@ components:
           items:
             type: object
             $ref: '#/components/schemas/CurrencyInfo'
+    ExchangeCurrencyRq:
+      title: ExchangeCurrencyRq
+      description: Запрос на перевод валют по текущему курсу
+      required:
+        - fromCurrency
+        - toCurrency
+        - fromValue
+      properties:
+        fromCurrency:
+          type: string
+          description: текущая валюта
+        toCurrency:
+          type: string
+          description: целевая валюта
+        fromValue:
+          type: number
+          description: сумма в текущей валюте
+    ExchangeCurrencyRs:
+      title: ExchangeCurrencyRs
+      description: Результат перевода валют по текущему курсу
+      required:
+        - exchangedCurrency
+        - exchangedValue
+      properties:
+        exchangedCurrency:
+          type: string
+          description: валюта
+        exchangedValue:
+          type: number
+          description: сумма

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AccountCurrency {
     RUB("Рубли"),
-    CYN("Юани"),
+    CNY("Юани"),
     USD("Доллары");
 
     private final String title;

@@ -1,24 +1,34 @@
 openapi: 3.0.3
 info:
-  title: Сервис работы с наличными средствами
+  title: Сервис работы с переводами между счетами
   version: 1.0.0-SNAPSHOT
 servers:
-  - url: http://localhost:8888/cash
+  - url: http://localhost:8888/transfer
 paths:
-  /cash/update:
+  /transfer/from/{fromUsername}/to/{toUsername}:
     post:
-      operationId: UpdateCash
-      summary: Внести или снять наличные средства со счета
+      parameters:
+        - name: fromUsername
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: toUsername
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: TransferCash
+      summary: Выполнить перевод средств между счетами
       security:
         - bearerAuth: [ ]
-      description: Сервис получает запрос на зачисление или снятие средств. Выполняется обращение к account-service, blocker-service, notification-service
       tags:
-        - cash
+        - transfer
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChangeCashRq'
+              $ref: '#/components/schemas/TransferCashRq'
       responses:
         "200":
           description: "OK"
@@ -58,25 +68,21 @@ components:
             errorMessage:
               type: string
               description: текст ошибки
-    ChangeCashRq:
-      title: ChangeCashRq
-      description: Запрос на внесение / снятие наличных средств со счета
+    TransferCashRq:
+      title: TransferCashRq
+      description: Запрос на перевод средств между счетами
       type: object
       required:
-        - action
-        - userName
-        - currency
-        - value
+        - userMail
+        - subject
+        - text
       properties:
-        action:
+        fromAccount:
           type: string
-          description: желаемое действие - внести или снять
-        userName:
+          description: счет источник
+        toAccount:
           type: string
-          description: логин пользователя
-        currency:
-          type: string
-          description: валюта счета
+          description: счет получатель
         value:
           type: number
-          description: количество средств
+          description: сумма средств

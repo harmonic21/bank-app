@@ -206,6 +206,48 @@ paths:
       responses:
         "200":
           description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseInfo'
+        "400":
+          description: "BAD REQUEST"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseInfo'
+  /account/{username}/cash/transfer:
+    post:
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: TransferCash
+      summary: Перевод денег между счетами
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferCashRq'
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseInfo'
+        "400":
+          description: "BAD REQUEST"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseInfo'
 components:
   securitySchemes:
     bearerAuth:
@@ -428,3 +470,25 @@ components:
         value:
           type: number
           description: количество средств
+    TransferCashRq:
+      title: TransferCashRq
+      description: Запрос на перевод денег между счетами пользователей
+      type: object
+      required:
+        - currency
+      properties:
+        fromAccount:
+          type: string
+          description: счет, с которого необходимо списать
+        fromAccountValue:
+          type: number
+          description: сумма, которую необходимо списать
+        toAccount:
+          type: string
+          description: счет, на который необходимо зачислить
+        toUser:
+          type: string
+          description: логин пользователя, которому выполняется перевод
+        toAccountValue:
+          type: number
+          description: сумма, которую необходимо зачислить

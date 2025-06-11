@@ -2,8 +2,10 @@ package ru.yandex.practicum.front.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.account.model.AccountDetailInfo;
 import ru.yandex.practicum.account.model.UserInfo;
 import ru.yandex.practicum.account.model.UserInfoRs;
+import ru.yandex.practicum.cash.model.ResponseInfo;
 import ru.yandex.practicum.front.constants.AccountCurrency;
 import ru.yandex.practicum.front.dto.AccountInfoDto;
 import ru.yandex.practicum.front.dto.PasswordInfoDto;
@@ -81,7 +84,11 @@ public class MainController {
                                       @ModelAttribute(name = "cashCurrency") String cashCurrency,
                                       BindingResult bindingResult,
                                       Model model) {
-        userAccountService.updateCash(action, login, cashCurrency, value);
+        var result = userAccountService.updateCash(action, login, cashCurrency, value);
+        if (BooleanUtils.isFalse(result.getStatus())) {
+            model.addAttribute("cashErrors", List.of(result.getError().getErrorMessage()));
+            return "main.html";
+        }
         return "redirect:/";
     }
 
@@ -93,14 +100,15 @@ public class MainController {
                                 @ModelAttribute(name = "to_login") String toLogin,
                                 BindingResult bindingResult,
                                 Model model) {
-        if (Objects.equals(fromCurrency, toCurrency)) {
-            model.addAttribute(
-                    "transferErrors",
-                    List.of("Указаны одинаковые валюты перевода. Перевод осуществляется между разными")
-            );
+        var result = transferService.doTransfer(login, toLogin, fromCurrency, toCurrency, transferValue);
+        if (BooleanUtils.isFalse(result.getStatus())) {
+            if (Objects.equals(login, toLogin)) {
+                model.addAttribute("transferErrors", List.of(result.getError().getErrorMessage()));
+            } else {
+                model.addAttribute("transferOtherErrors", List.of(result.getError().getErrorMessage()));
+            }
             return "main.html";
         }
-        transferService.doTransfer(login, toLogin, fromCurrency, toCurrency, transferValue);
         return "redirect:/";
     }
 

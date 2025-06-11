@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.account.api.AccountApi;
-import ru.yandex.practicum.account.model.ChangeCashRq;
-import ru.yandex.practicum.account.model.CreateAccountRq;
-import ru.yandex.practicum.account.model.DeleteAccountRq;
+import ru.yandex.practicum.account.model.*;
 import ru.yandex.practicum.account.service.AccountService;
 
 @RestController
@@ -34,8 +32,14 @@ public class AccountController implements AccountApi {
     }
 
     @Override
-    public ResponseEntity<Void> getCashFromAccount(String username, ChangeCashRq changeCashRq) {
+    public ResponseEntity<ResponseInfo> getCashFromAccount(String username, ChangeCashRq changeCashRq) {
         accountService.getCashFromAccount(username, changeCashRq);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new ResponseInfo(true));
+    }
+
+    @Override
+    public ResponseEntity<ResponseInfo> transferCash(String username, TransferCashRq transferCashRq) {
+        accountService.transferCash(username, transferCashRq);
+        return ResponseEntity.ok(new ResponseInfo(true));
     }
 }

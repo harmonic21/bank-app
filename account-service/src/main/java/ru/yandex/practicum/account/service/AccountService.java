@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.account.entity.UserAccountEntity;
 import ru.yandex.practicum.account.entity.UserEntity;
+import ru.yandex.practicum.account.exceptions.OperationBlockException;
 import ru.yandex.practicum.account.model.ChangeCashRq;
 import ru.yandex.practicum.account.model.CreateAccountRq;
 import ru.yandex.practicum.account.model.DeleteAccountRq;
+import ru.yandex.practicum.account.model.TransferCashRq;
 import ru.yandex.practicum.account.repository.AccountRepository;
 import ru.yandex.practicum.account.repository.UserRepository;
 
@@ -56,9 +58,39 @@ public class AccountService {
     public void getCashFromAccount(String userName, ChangeCashRq request) {
         accountRepository.findUserAccountWithCurrency(userName, request.getCurrency())
                 .ifPresent(account -> {
+                    if (account.getBalance().compareTo(request.getValue()) < 0) {
+                        throw new OperationBlockException("На счете %s недостаточно средств".formatted(request.getCurrency()));
+                    }
                     account.setBalance(account.getBalance().subtract(request.getValue()));
                     accountRepository.save(account);
                 });
+    }
+
+    @Transactional
+    public void transferCash(String userName, TransferCashRq request) {
+        accountRepository.findUserAccountWithCurrency(userName, request.getFromAccount())
+                .ifPresentOrElse(
+                        account -> {
+                            if (account.getBalance().compareTo(request.getFromAccountValue()) < 0) {
+                                throw new OperationBlockException("На счете %s недостаточно средств".formatted(request.getFromAccount()));
+                            }
+                            account.setBalance(account.getBalance().subtract(request.getFromAccountValue()));
+                            accountRepository.save(account);
+                        },
+                        () -> {
+                            throw new OperationBlockException("У пользователя %s нет счета %s".formatted(userName, request.getFromAccount()));
+                        }
+                );
+        accountRepository.findUserAccountWithCurrency(request.getToUser(), request.getToAccount())
+                .ifPresentOrElse(
+                        account -> {
+                            account.setBalance(account.getBalance().add(request.getToAccountValue()));
+                            accountRepository.save(account);
+                        },
+                        () -> {
+                            throw new OperationBlockException("У пользователя %s нет счета %s".formatted(request.getToUser(), request.getToAccount()));
+                        }
+                );
     }
 
     private UserAccountEntity mapNewAccount(UserEntity user, String currency) {

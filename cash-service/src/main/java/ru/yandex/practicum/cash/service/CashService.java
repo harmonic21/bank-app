@@ -2,9 +2,12 @@ package ru.yandex.practicum.cash.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import ru.yandex.practicum.account.api.AccountApi;
 import ru.yandex.practicum.account.api.UserApi;
+import ru.yandex.practicum.account.model.ResponseInfo;
 import ru.yandex.practicum.account.model.UserInfo;
 import ru.yandex.practicum.account.model.UserInfoRs;
 import ru.yandex.practicum.blocker.api.CheckApi;
@@ -12,6 +15,7 @@ import ru.yandex.practicum.blocker.model.CheckOperationRq;
 import ru.yandex.practicum.blocker.model.CheckResultRs;
 import ru.yandex.practicum.cash.error.OperationFailedException;
 import ru.yandex.practicum.cash.model.ChangeCashRq;
+import ru.yandex.practicum.cash.util.RestClientUtility;
 import ru.yandex.practicum.notification.api.NotificationApi;
 import ru.yandex.practicum.notification.model.SendNotificationRq;
 
@@ -39,7 +43,15 @@ public class CashService {
                     .currency(request.getCurrency())
                     .value(request.getValue());
             if (Objects.equals("GET", request.getAction())) {
-                accountApi.getCashFromAccount(request.getUserName(), accountRequest).block();
+                var result = accountApi.getCashFromAccount(request.getUserName(), accountRequest)
+                        .onErrorResume(
+                                RestClientUtility::isWebClientResponseException,
+                                t -> Mono.just(RestClientUtility.getResponseBodyFromError(t, ResponseInfo.class))
+                        ).block();
+                System.out.println(result);
+                if (BooleanUtils.isFalse(result.getStatus())) {
+                    throw new OperationFailedException(result.getError().getErrorMessage());
+                }
             } else if (Objects.equals("PUT", request.getAction())) {
                 accountApi.addCashToAccount(request.getUserName(), accountRequest).block();
             }

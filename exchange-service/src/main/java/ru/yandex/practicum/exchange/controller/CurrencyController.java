@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.exchange.api.CurrencyApi;
-import ru.yandex.practicum.exchange.model.CurrencyInfoRs;
-import ru.yandex.practicum.exchange.model.ResponseInfo;
-import ru.yandex.practicum.exchange.model.UpdateCurrencyRq;
+import ru.yandex.practicum.exchange.model.*;
 import ru.yandex.practicum.exchange.service.CurrencyInfoStorage;
 
 @RestController
@@ -25,5 +23,19 @@ public class CurrencyController implements CurrencyApi {
     public ResponseEntity<Void> updateCurrencyInfo(UpdateCurrencyRq updateCurrencyRq) {
         currencyInfoStorage.updateCurrencyInfo(updateCurrencyRq.getCurrencyInfo());
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<ExchangeCurrencyRs> exchangeCurrency(ExchangeCurrencyRq exchangeCurrencyRq) {
+        return ResponseEntity.ok(
+                new ExchangeCurrencyRs(
+                        exchangeCurrencyRq.getToCurrency(),
+                        currencyInfoStorage.exchangeCurrency(
+                                exchangeCurrencyRq.getFromCurrency(),
+                                exchangeCurrencyRq.getToCurrency(),
+                                exchangeCurrencyRq.getFromValue()
+                        )
+                )
+        );
     }
 }

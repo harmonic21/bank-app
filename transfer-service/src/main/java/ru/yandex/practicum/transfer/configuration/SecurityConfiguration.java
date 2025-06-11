@@ -1,4 +1,4 @@
-package ru.yandex.practicum.exchange.configuration;
+package ru.yandex.practicum.transfer.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -6,6 +6,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -21,15 +26,13 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
         return security
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(HttpMethod.GET, "/currency/info/actual").hasAuthority("READ_CURRENCY_VALUE")
-                        .requestMatchers(HttpMethod.PUT, "/currency/info/update").hasAuthority("CHANGE_CURRENCY_VALUE")
-                        .requestMatchers(HttpMethod.POST, "/currency/exchange").hasAuthority("EXCHANGE_CURRENCY")
+                        .requestMatchers(HttpMethod.POST, "/transfer/from/{fromUsername}/to/{toUsername}").hasAuthority("TRANSFER_CASH")
                 )
                 .oauth2ResourceServer(customizer -> customizer
                         .jwt(jwtCustomizer -> {
                             JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
                             jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> Optional.ofNullable(jwt.getClaim("resource_access"))
-                                    .map(access -> ((Map<String, Object>)access).get("exchange-service"))
+                                    .map(access -> ((Map<String, Object>)access).get("transfer-service"))
                                     .map(accountsAccess -> ((Map<String, Object>)accountsAccess).get("roles"))
                                     .map(roles -> (List<String>) roles)
                                     .stream()
@@ -42,5 +45,19 @@ public class SecurityConfiguration {
                         })
                 )
                 .build();
+    }
+
+    @Bean
+    public OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistrationRepository clientRegistrationRepository,
+                                                                 OAuth2AuthorizedClientService authorizedClientService) {
+        AuthorizedClientServiceOAuth2AuthorizedClientManager manager =
+                new AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, authorizedClientService);
+
+        manager.setAuthorizedClientProvider(OAuth2AuthorizedClientProviderBuilder.builder()
+                .clientCredentials()
+                .refreshToken()
+                .build());
+
+        return manager;
     }
 }

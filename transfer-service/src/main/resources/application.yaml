@@ -2,7 +2,7 @@ spring:
   config:
     import: "optional:consul:"
   application:
-    name: front-ui
+    name: transfer-service
   cloud:
     consul:
       host: localhost
@@ -11,6 +11,9 @@ spring:
         enabled: true
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
       client:
         provider:
           keycloak:
@@ -20,24 +23,26 @@ spring:
             user-name-attribute: sub
             jwk-set-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/certs
         registration:
-          front-ui:
+          transfer-service:
             authorizationGrantType: client_credentials
             provider: keycloak
-            client-id: front-ui
-            client-secret: UtEeKuE25MilWrxKqbxzCDoO0Pto8uKe
+            client-id: transfer-service
+            client-secret: 9Wlzt3gzLrsZgBDADrQkHe8eGKwOxzkN
             redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
             scope: profile
             clientAuthenticationMethod: client_secret_post
+server:
+  port: 8095
+rest:
+  client:
+    blocker:
+      url: http://localhost:8888/blocker
+    notification:
+      url: http://localhost:8888/notifications
+    accounts:
+      url: http://localhost:8888/accounts
+    exchange:
+      url: http://localhost:8888/exchange
 keycloak-custom:
   host: localhost
   port: 9090
-rest:
-  client:
-    accounts:
-      url: http://localhost:8090
-    cash:
-      url: http://localhost:8888/cash
-    exchange:
-      url: http://localhost:8888/exchange
-    transfer:
-      url: http://localhost:8888/transfer

@@ -1,13 +1,13 @@
-package ru.yandex.practicum.cash.controller;
+package ru.yandex.practicum.transfer.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ru.yandex.practicum.account.model.ResponseInfo;
-import ru.yandex.practicum.account.model.ResponseInfoError;
-import ru.yandex.practicum.cash.error.OperationFailedException;
+import ru.yandex.practicum.transfer.error.OperationFailedException;
+import ru.yandex.practicum.transfer.model.ResponseInfo;
+import ru.yandex.practicum.transfer.model.ResponseInfoError;
 
 @ControllerAdvice
 public class ErrorController {

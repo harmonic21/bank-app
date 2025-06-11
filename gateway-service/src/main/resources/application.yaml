@@ -38,6 +38,12 @@ spring:
                 - Path=/notifications/**
               filters:
                 - RewritePath=/notifications/?(?<segment>.*), /$\{segment}
+            - id: transfer-service-route
+              uri: http://127.0.0.1:8095
+              predicates:
+                - Path=/transfer/**
+              filters:
+                - RewritePath=/transfer/?(?<segment>.*), /$\{segment}
 logging:
   level:
     reactor:
