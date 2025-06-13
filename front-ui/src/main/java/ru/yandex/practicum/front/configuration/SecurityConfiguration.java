@@ -31,6 +31,7 @@ public class SecurityConfiguration {
                 .formLogin(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/signup").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().hasRole("USER")
                 );
         return httpSecurity.build();
