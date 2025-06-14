@@ -1,0 +1,30 @@
+replicaCount: 1
+image:
+  repository: quay.io/keycloak/keycloak
+  pullPolicy: IfNotPresent
+  tag: "latest"
+containerArgs: ['start-dev']
+containerEnv:
+  - name: KC_DB
+    value: postgres
+  - name: KC_DB_URL
+    value: jdbc:postgresql://postgre-db-svc:5432/yandex_practicum
+envImport:
+  - secretRef:
+      name: identity-provider-secret
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 8080
+resources: {}
+volumes: {}
+volumeMounts: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

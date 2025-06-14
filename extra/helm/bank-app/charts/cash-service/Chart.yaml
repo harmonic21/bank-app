@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cash-service
+description: Сервис, отвечающих за съем / начисление наличных денег. Осуществялет окрестрирующую функцию
+type: application
+version: 0.1.0
+appVersion: "1.0.0-SNAPSHOT"

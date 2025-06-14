@@ -1,0 +1,67 @@
+replicaCount: 1
+image:
+  repository: notification-service
+  pullPolicy: Never
+  tag: "latest"
+containerEnv:
+  - name: SPRING_CONFIG_LOCATION
+    value: /config/application.yaml,/config/secret/mail-secret.yaml
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 8080
+resources: {}
+livenessProbe:
+  httpGet:
+    path: /actuator/health/liveness
+    port: 8080
+  initialDelaySeconds: 120
+  periodSeconds: 20
+  timeoutSeconds: 15
+  successThreshold: 1
+  failureThreshold: 3
+readinessProbe:
+  httpGet:
+    path: /actuator/health/readiness
+    port: 8080
+  initialDelaySeconds: 120
+  periodSeconds: 20
+  timeoutSeconds: 15
+  successThreshold: 1
+  failureThreshold: 3
+volumes:
+  - name: application-configuration
+    configMap:
+      name: notification-service-config
+  - name: mail-secret
+    secret:
+      secretName: notification-service-secret
+      optional: false
+volumeMounts:
+  - name: application-configuration
+    mountPath: /config
+    readOnly: true
+  - name: mail-secret
+    mountPath: /config/secret
+    readOnly: true
+nodeSelector: {}
+tolerations: []
+affinity: {}
+identityProvider:
+  host: identity-provider-svc
+  port: 8080
+actuatorParams:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+email:
+  host: smtp.gmail.com
+  port: 587
+  box: test@gmail.com

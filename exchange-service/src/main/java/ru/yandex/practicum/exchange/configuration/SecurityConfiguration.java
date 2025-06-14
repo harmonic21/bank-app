@@ -24,6 +24,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/currency/info/actual").hasAuthority("READ_CURRENCY_VALUE")
                         .requestMatchers(HttpMethod.PUT, "/currency/info/update").hasAuthority("CHANGE_CURRENCY_VALUE")
                         .requestMatchers(HttpMethod.POST, "/currency/exchange").hasAuthority("EXCHANGE_CURRENCY")
+                        .requestMatchers("/actuator/**").permitAll()
                 )
                 .oauth2ResourceServer(customizer -> customizer
                         .jwt(jwtCustomizer -> {

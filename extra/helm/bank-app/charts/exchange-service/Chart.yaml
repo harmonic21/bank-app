@@ -1,0 +1,6 @@
+apiVersion: v2
+name: exchange-service
+description: Сервис, хранящий информацию о текущем курсе валют и выполняющий их преобразования
+type: application
+version: 0.1.0
+appVersion: "1.0.0-SNAPSHOT"

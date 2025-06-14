@@ -1,9 +1,0 @@
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
-keycloak-custom:
-  host: keycloack
-  port: 8080

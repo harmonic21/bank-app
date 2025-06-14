@@ -1,0 +1,24 @@
+replicaCount: 1
+image:
+  repository: postgres
+  pullPolicy: IfNotPresent
+  tag: "13.3"
+envImport:
+  - secretRef:
+      name: postgre-db-secret
+containerEnv: {}
+nameOverride: ""
+fullnameOverride: ""
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 5432
+resources: {}
+volumes: {}
+volumeMounts: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

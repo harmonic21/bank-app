@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+data:
+  application.yaml: |
+    spring:
+      application:
+        name: {{ .Chart.Name }}
+      security:
+        oauth2:
+          resourceserver:
+            jwt:
+              issuer-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master
+      mail:
+        host: {{ .Values.email.host }}
+        port: {{ .Values.email.port }}
+        properties:
+          mail:
+            smtp:
+              auth: true
+              starttls:
+                enable: true
+    notification:
+      mail:
+        tech-mail-box: {{ .Values.email.box }}
+    keycloak-custom:
+      host: {{ .Values.identityProvider.host }}
+      port: {{ .Values.identityProvider.port }}
+    {{- with .Values.actuatorParams }}
+    management:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}

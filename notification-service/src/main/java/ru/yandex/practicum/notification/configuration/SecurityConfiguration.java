@@ -22,6 +22,7 @@ public class SecurityConfiguration {
         return security
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.POST, "/notification/send").hasAuthority("SEND_NOTIFICATION")
+                        .requestMatchers("/actuator/**").permitAll()
                 )
                 .oauth2ResourceServer(customizer -> customizer
                         .jwt(jwtCustomizer -> {

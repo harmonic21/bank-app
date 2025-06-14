@@ -27,6 +27,7 @@ public class SecurityConfiguration {
         return security
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.POST, "/cash/update").hasAuthority("CHANGE_CASH")
+                        .requestMatchers("/actuator/**").permitAll()
                 )
                 .oauth2ResourceServer(customizer -> customizer
                         .jwt(jwtCustomizer -> {

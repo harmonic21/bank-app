@@ -22,6 +22,7 @@ public class SecurityConfiguration {
         return security
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(HttpMethod.POST, "/operation/check").hasAuthority("REQUEST_CHECK_OPERATION")
+                        .requestMatchers("/actuator/**").permitAll()
                 )
                 .oauth2ResourceServer(customizer -> customizer
                         .jwt(jwtCustomizer -> {

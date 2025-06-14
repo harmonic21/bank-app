@@ -1,0 +1,6 @@
+apiVersion: v2
+name: transfer-service
+description: Сервис, отвечающих за процесс перевода денег между счетами. Осуществляет оркестрирующую фунцкию
+type: application
+version: 0.1.0
+appVersion: "1.0.0-SNAPSHOT"

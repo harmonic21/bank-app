@@ -1,16 +1,8 @@
 server:
   port: 8094
 spring:
-  config:
-    import: "optional:consul:"
   application:
     name: notification-service
-  cloud:
-    consul:
-      host: localhost
-      port: 8500
-      config:
-        enabled: true
   security:
     oauth2:
       resourceserver:
