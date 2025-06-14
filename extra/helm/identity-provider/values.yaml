@@ -6,14 +6,20 @@ replicaCount: 1
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  repository: account-service
+  repository: quay.io/keycloak/keycloak
   # This sets the pull policy for images.
-  pullPolicy: Never
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
+containerArgs: ['start-dev']
 containerEnv:
-  - name: SPRING_CONFIG_LOCATION
-    value: /config/application.yaml,/config/secret/db-secret.yaml
+  - name: KC_DB
+    value: postgres
+  - name: KC_DB_URL
+    value: jdbc:postgresql://postgre-db-svc:5432/yandex_practicum
+envImport:
+  - secretRef:
+      name: identity-provider-secret
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
 # This is to override the chart name.
@@ -55,58 +61,12 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
 
-# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-livenessProbe:
-  httpGet:
-    path: /actuator/health/liveness
-    port: 8080
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 15
-  successThreshold: 1
-  failureThreshold: 3
-readinessProbe:
-  httpGet:
-    path: /actuator/health/readiness
-    port: 8080
-  initialDelaySeconds: 30
-  periodSeconds: 10
-  timeoutSeconds: 15
-  successThreshold: 1
-  failureThreshold: 3
-
 # Additional volumes on the output Deployment definition.
-volumes:
-  - name: application-configuration
-    configMap:
-      name: account-service-config
-  - name: db-secret
-    secret:
-      secretName: account-service-secret
-      optional: false
+volumes: {}
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts:
-  - name: application-configuration
-    mountPath: /config
-    readOnly: true
-  - name: db-secret
-    mountPath: /config/secret
-    readOnly: true
+volumeMounts: {}
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
-
-identityProvider:
-  host: identity-provider-svc
-  port: 8080
-actuatorParams:
-  endpoint:
-    health:
-      probes:
-        enabled: true
-db:
-  url: jdbc:postgresql://postgre-db-svc:5432/yandex_practicum
-  driver: org.postgresql.Driver
-  schema: bank_account
