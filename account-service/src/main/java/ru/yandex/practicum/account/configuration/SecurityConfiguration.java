@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.PUT, "/account/**").hasAuthority("CHANGE_ACCOUNTS_INFO")
                         .requestMatchers(HttpMethod.POST, "/account/**").hasAuthority("CHANGE_ACCOUNTS_INFO")
                         .requestMatchers(HttpMethod.DELETE, "/account/**").hasAuthority("CHANGE_ACCOUNTS_INFO")
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(customizer -> customizer

@@ -1,14 +1,6 @@
 spring:
-  config:
-    import: "optional:consul:"
   application:
     name: account-service
-  cloud:
-    consul:
-      host: localhost
-      port: 8500
-      config:
-        enabled: true
   datasource:
     url: jdbc:postgresql://localhost:5432/yandex_practicum
     username: bank_app_user
@@ -28,8 +20,8 @@ server:
 keycloak-custom:
   host: localhost
   port: 9090
-logging:
-  level:
-    org:
-      springframework:
-        web: DEBUG
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
