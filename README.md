@@ -3,7 +3,6 @@
 # Описание
 ## Структура
 Приложение состоит из 9 микросервисов:
-- gateway-service - сервис, реализующий Gateway API паттерн, позволяющий убрать из сервисов необходимость обладать информацией об актуальном адресе каждого микросервиса
 - front-ui - фронтальное приложение. Представляет готовые html страницы в браузере, взаимодействует со всеми остальными приложениями по REST
 - account-service - мастер-система для данных по пользователям и их счетам. Взаимодействует с СУБД postgresql
 - transfer-service - сервис, отвечающих за процесс перевода денег между счетами. Осуществляет оркестрирующую фунцкию
@@ -14,36 +13,55 @@
 - exchange-generator-service - сервис, создающий рандомные значения для текущих курсов валют
 
 ## Вспомогательные системы
-- HashiCorp Consul - система распределенного хранения конфигураций
 - Keycloack - identity-провайдер
 - Postgresql - СУБД
 
 # Подготовка 
-Для удобства запуска все сервисы готовы к запуску с использованием docker-compose   
-Для этого перейдите в директорию extra и выполните скрипт run.sh   
-В рамках работы скрипта будет выполнена полная сборка всех микросервисов, затем будет запущена БД и keycloack. После этого скрипт встанет на паузу, чтобы вы могли выполнить импорт realm в keycloack
+## K8S
+Приложение готово к развертыванию в k8s. В качестве локальной реализации предлагам использовать minikube.   
+Если у Вас уже готов кластер k8s, то необходимо подготовить наши namespace:
+1. kubectl create namespace dev
+2. kubectl create namespace test
+3. kubectl create namespace prod
+
+Деплой в k8s будет осуществляться при помощи helm-чартов, которые расположены в директории extra/helm.   
+Каждый микросервис определен отдельным чартом, но все они объединены под общим зонтичным чартом микросервисного приложения "bank-app".   
+
+![Релизы helm](extra/screenshot/helm-releases.png)
+![Логи k8s](extra/screenshot/helm-logs.png)
+
+Для автоматизации процесса сборки, тестирования и установки рекомендуется использовать Jenkins. Готовый Jenkinsfile лежит в корне репозитория.
+
+![Джоб jenkins](extra/screenshot/jenkins-job.png)
+![Пример запуска jenkins](extra/screenshot/jenkins-param.png)
+
 ## Импорт realm в keycloack
-1. Зайти на адрес http://localhost:9090
-2. Авторизоваться с данными admin / admin
-3. Внизу слева выбрать "Realm settings"
-4. Выбрать вверху справа выпадающих список и там "Partial import"
-5. Выбрать файл ./extra/realm-export.json
-6. Указать галочки по всем пунктам
-7. Для конфликтов выбрать "Skip"
+1. Выполните тунелирование на pod keycloack: minikube service identity-provider-svc --url -n dev
+2. Перейти по адресу из результата тунелирования
+3. Авторизоваться с данными admin / admin
+4. Внизу слева выбрать "Realm settings"
+5. Выбрать вверху справа выпадающих список и там "Partial import"
+6. Выбрать файл ./extra/realm-export.json
+7. Указать галочки по всем пунктам
+8. Для конфликтов выбрать "Skip"
 
-Готово! Реалм загружен. Теперь нам необходимо для каждого сервиса, выполняющего клиентские запросы, указать его credentials в параметрах (application.yaml)
-- Имя сервиса и имя Client в keycloack совпадают. Вам необходимо открыть Client, взять его Credentials -> client secret и указать его в ./extra/startup-config/service-name/application.yaml в параметре spring.security.client.registration.*.client-secret
+Готово! Реалм загружен. Теперь нам необходимо для каждого сервиса, выполняющего клиентские запросы, указать его credentials в secret.yaml в соответствующем чарте. 
+- Имя сервиса и имя Client в keycloack совпадают. Вам необходимо открыть Client, взять его Credentials -> client secret и указать его в ./extra/helm/bank-app/charts/service-name/templates/secret.yaml в параметре spring.security.client.registration.*.client-secret
 - Список сервисов: cash-service, exchange-generator-service, front-ui, transfer-service
-
-После этого можно в консоли, где запущен скрипт, нажать "Enter"
 
 ## Работа с отправкой уведомлений
 Если вы хотите, чтобы сервис notification-service отправил письмо на электронную почту с уведомлением по операции, то необходимо выполнить подготовку:
 1. Добавляем данные по почтовому ящику, пользователю и паролю, от имени которых будет идти отправка
-2. Заходим в ./extra/consul/bootstrap/values.json
-3. Для объекта с key config/notification-service/notification/mail/tech-mail-box указываем почтовый ящик, с которого будет идти отправка (например gmail). Кодируем значение в base64
-4. Для объекта с key config/notification-service/spring/mail/username указываем имя пользователя. Кодируем значение в base64
-5. Для объекта с key config/notification-service/spring/mail/password указываем пароль. Кодируем значение в base64
+2. Заходим в ./extra/helm/bank-app/charts/notification-service/
+3. Подготавливаем данные вида 
+```yaml
+spring:
+  mail:
+    username: test
+    password: test
+```
+4. Кодируем в Base64
+5. Добавляем в secret.yaml
 
 # Использование приложения
 Главная страница приложения доступна по адресу http://localhost:8080   
