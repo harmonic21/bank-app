@@ -25,7 +25,7 @@ public class ExchangeGeneratorService {
     @Value("${kafka.producer.topic-name}")
     private String topicName;
 
-    @Scheduled(fixedDelay = 1L, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedDelay = 5L, timeUnit = TimeUnit.SECONDS)
     public void generateActualExchangeInfo() {
         log.info("Отправляем событие в {} о курсе рубля", topicName);
         kafkaTemplate.send(topicName, RUB_INFO);

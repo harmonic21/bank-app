@@ -13,7 +13,11 @@ public class CurrencyInfoStorage {
     private static final Map<String, CurrencyInfo> CURRENCY_INFO = new HashMap<>();
 
     public void updateCurrencyInfo(List<CurrencyInfo> currencyInfoList) {
-        currencyInfoList.forEach(currency -> CURRENCY_INFO.put(currency.getName(), currency));
+        currencyInfoList.forEach(this::updateCurrencyInfo);
+    }
+
+    public void updateCurrencyInfo(CurrencyInfo currencyInfo) {
+        CURRENCY_INFO.put(currencyInfo.getName(), currencyInfo);
     }
 
     public List<CurrencyInfo> getCurrencyInfo() {

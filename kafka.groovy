@@ -36,7 +36,7 @@ pipeline {
             }
         }
         stage('Create topic') {
-            when { expression { return create_topic } }
+            when { expression { return create_topic == true } }
             steps {
                 powershell "kubectl exec -n $params.namespace kafka-0 -- ./opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic $params.topic_name"
             }

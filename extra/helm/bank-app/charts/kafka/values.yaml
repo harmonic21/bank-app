@@ -22,6 +22,16 @@ containerEnv:
     value: "true"
   - name: KAFKA_LOG_DIRS
     value: "/var/lib/kafka/data"
+  - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+    value: "1"
+  - name: KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS
+    value: "0"
+  - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+    value: "1"
+  - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+    value: "1"
+  - name: KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR
+    value: "1"
 nameOverride: ""
 fullnameOverride: ""
 podAnnotations: {}
@@ -30,7 +40,11 @@ podSecurityContext: {}
 securityContext: {}
 service:
   type: ClusterIP
-  port: 9092
+  ports:
+    - port: 9092
+      name: port-9092
+    - port: 9093
+      name: port-9093
 resources: {}
 volumes: {}
 volumeMounts: {}
