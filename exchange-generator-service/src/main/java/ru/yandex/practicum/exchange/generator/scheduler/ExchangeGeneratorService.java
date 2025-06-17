@@ -1,17 +1,18 @@
 package ru.yandex.practicum.exchange.generator.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.exchange.api.CurrencyApi;
 import ru.yandex.practicum.exchange.model.CurrencyInfo;
-import ru.yandex.practicum.exchange.model.UpdateCurrencyRq;
 
 import java.math.BigDecimal;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ExchangeGeneratorService {
@@ -19,14 +20,18 @@ public class ExchangeGeneratorService {
     private static final CurrencyInfo RUB_INFO = new CurrencyInfo().name("Рубль").shortName("RUB").value(BigDecimal.ONE);
     private static final Random RANDOM = new Random();
 
-    private final ApplicationContext applicationContext;
+    private final KafkaTemplate<String, CurrencyInfo> kafkaTemplate;
+
+    @Value("${kafka.producer.topic-name}")
+    private String topicName;
 
     @Scheduled(fixedDelay = 1L, timeUnit = TimeUnit.SECONDS)
     public void generateActualExchangeInfo() {
-        UpdateCurrencyRq request = new UpdateCurrencyRq()
-                .addCurrencyInfoItem(RUB_INFO)
-                .addCurrencyInfoItem(new CurrencyInfo().name("Юань").shortName("CNY").value(BigDecimal.valueOf(RANDOM.nextDouble(100))))
-                .addCurrencyInfoItem(new CurrencyInfo().name("Доллар").shortName("USD").value(BigDecimal.valueOf(RANDOM.nextDouble(100))));
-        ((CurrencyApi)applicationContext.getBean("currencyApi")).updateCurrencyInfo(request).block();
+        log.info("Отправляем событие в {} о курсе рубля", topicName);
+        kafkaTemplate.send(topicName, RUB_INFO);
+        log.info("Отправляем событие в {} о курсе юаня", topicName);
+        kafkaTemplate.send(topicName, new CurrencyInfo().name("Юань").shortName("CNY").value(BigDecimal.valueOf(RANDOM.nextDouble(100))));
+        log.info("Отправляем событие в {} о курсе доллара", topicName);
+        kafkaTemplate.send(topicName, new CurrencyInfo().name("Доллар").shortName("USD").value(BigDecimal.valueOf(RANDOM.nextDouble(100))));
     }
 }

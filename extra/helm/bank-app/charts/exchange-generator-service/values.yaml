@@ -5,7 +5,7 @@ image:
   tag: "latest"
 containerEnv:
   - name: SPRING_CONFIG_LOCATION
-    value: /config/application.yaml,/config/secret/client-key.yaml
+    value: /config/application.yaml
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -39,25 +39,18 @@ volumes:
   - name: application-configuration
     configMap:
       name: exchange-generator-service-config
-  - name: client-key-secret
-    secret:
-      secretName: exchange-generator-service-secret
-      optional: false
 volumeMounts:
   - name: application-configuration
     mountPath: /config
     readOnly: true
-  - name: client-key-secret
-    mountPath: /config/secret
-    readOnly: true
 nodeSelector: {}
 tolerations: []
 affinity: {}
-identityProvider:
-  host: identity-provider-svc
-  port: 8080
 actuatorParams:
   endpoint:
     health:
       probes:
         enabled: true
+kafka:
+  bootstrap: kafka-svc:9092
+  exchange_topic: "CURRENCY.ACTUAL"

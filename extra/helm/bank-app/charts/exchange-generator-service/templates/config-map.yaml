@@ -7,31 +7,10 @@ data:
     spring:
       application:
         name: {{ .Chart.Name }}
-      security:
-        oauth2:
-          client:
-            provider:
-              keycloak:
-                authorization-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/auth
-                token-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/token
-                user-info-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/userinfo
-                user-name-attribute: sub
-                jwk-set-uri: http://${keycloak-custom.host}:${keycloak-custom.port}/realms/master/protocol/openid-connect/certs
-            registration:
-              exchange-generator-service:
-                authorizationGrantType: client_credentials
-                provider: keycloak
-                client-id: exchange-generator-service
-                redirect-uri: '{baseUrl}/{action}/oauth2/code/{registrationId}'
-                scope: profile
-                clientAuthenticationMethod: client_secret_post
-    keycloak-custom:
-      host: {{ .Values.identityProvider.host }}
-      port: {{ .Values.identityProvider.port }}
-    rest:
-      client:
-        exchange:
-          url: http://exchange-service-svc:8080
+    kafka:
+      producer:
+        bootstraps: {{ .Values.kafka.bootstrap }}
+        topic-name: {{ .Values.kafka.exchange_topic }}
     {{- with .Values.actuatorParams }}
     management:
       {{- toYaml . | nindent 6 }}
