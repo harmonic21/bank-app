@@ -4,6 +4,8 @@ pipeline {
     parameters {
         choice(name: "namespace", choices: ["dev", "test", "prod"], description: "Choose namespace")
         booleanParam(name: "need_deploy_to_namespace", defaultValue: false, description: "Job create new template and deploy kafka to namespace")
+        booleanParam(name: "create_topic", defaultValue: false, description: "If enable - auto-create topic")
+        string(name: "topic_name")
     }
 
     environment {
@@ -31,6 +33,12 @@ pipeline {
                       powershell "helm upgrade kafka ./kafka --namespace=$params.namespace"
                     }
                 }
+            }
+        }
+        stage('Create topic') {
+            when { expression { return create_topic } }
+            steps {
+                powershell "kubectl exec -n $params.namespace kafka-0 -- ./opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic $params.topic_name"
             }
         }
     }
