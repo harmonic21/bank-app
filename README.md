@@ -15,6 +15,7 @@
 ## Вспомогательные системы
 - Keycloack - identity-провайдер
 - Postgresql - СУБД
+- Kafka - брокер сообщений
 
 # Подготовка 
 ## K8S
@@ -62,6 +63,20 @@ spring:
 ```
 4. Кодируем в Base64
 5. Добавляем в secret.yaml
+
+## Подготовка Kafka
+Для удобства деплоя и конфигурации Kafka подготовлен отдельный groovy скрипт, описывающий декларативный пайплайн в Jenkins.   
+Создав новый Job на основе этого скрипта мы можем легко выполнить деплой, а затем задать желаемый топик, который будет создан в нашей Kafka   
+
+![Джоб jenkins kafka](extra/screenshot/kafka-job.png)
+![Пример запуска jenkins](extra/screenshot/kafka-job-view.png)
+
+На взаимодействие через брокер сообщений были переведены следующие сервисы:   
+- Producer: exchange-generator-service, cash-service, transfer-service
+- Consumer: exchange-service, notification-service
+
+![Пример логов продюссера](extra/screenshot/exchange-generator-produce.png)
+![Пример логов консюмера](extra/screenshot/exchange-service-consume.png)
 
 # Использование приложения
 Главная страница приложения доступна по адресу http://localhost:8080   
