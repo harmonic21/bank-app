@@ -61,3 +61,6 @@ actuatorParams:
     health:
       probes:
         enabled: true
+kafka:
+  bootstrap: kafka-svc:9092
+  exchange_topic: "NOTIFICATION"

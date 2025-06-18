@@ -26,6 +26,10 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
@@ -184,10 +188,7 @@
                             <generateApiDocumentation>false</generateApiDocumentation>
                             <generateApiTests>false</generateApiTests>
                             <generateModelTests>false</generateModelTests>
-                            <generateApis>true</generateApis>
-                            <supportingFilesToGenerate>
-                                ApiClient.java,JavaTimeFormatter.java,Authentication.java,HttpBasicAuth.java,HttpBearerAuth.java,ApiKeyAuth.java,RFC3339DateFormat.java
-                            </supportingFilesToGenerate>
+                            <generateApis>false</generateApis>
                             <configOptions>
                                 <dateLibrary>java8</dateLibrary>
                                 <useTags>true</useTags>

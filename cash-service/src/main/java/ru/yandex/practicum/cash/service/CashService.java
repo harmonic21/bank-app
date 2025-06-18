@@ -3,6 +3,8 @@ package ru.yandex.practicum.cash.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import ru.yandex.practicum.account.api.AccountApi;
@@ -16,7 +18,6 @@ import ru.yandex.practicum.blocker.model.CheckResultRs;
 import ru.yandex.practicum.cash.error.OperationFailedException;
 import ru.yandex.practicum.cash.model.ChangeCashRq;
 import ru.yandex.practicum.cash.util.RestClientUtility;
-import ru.yandex.practicum.notification.api.NotificationApi;
 import ru.yandex.practicum.notification.model.SendNotificationRq;
 
 import java.util.Objects;
@@ -28,8 +29,11 @@ public class CashService {
 
     private final CheckApi checkApi;
     private final AccountApi accountApi;
-    private final NotificationApi notificationApi;
     private final UserApi userApi;
+    private final KafkaTemplate<String, SendNotificationRq> kafkaTemplate;
+
+    @Value("${kafka.producer.topic-name}")
+    private String topicName;
 
     public void updateCash(ChangeCashRq request) {
         CheckResultRs checkResult = checkApi.checkClientOperation(new CheckOperationRq()
@@ -75,14 +79,11 @@ public class CashService {
             subject = "На ваш %s счет внесены наличные.";
             text = "Уважаемый %s, уведомляем Вас, что на Ваш счет %s внесены наличные в размере %s";
         }
-        notificationApi.sendNotification(
-                new SendNotificationRq()
-                        .userMail(userInfo.getEmail())
-                        .subject(subject.formatted(requestInfo.getCurrency()))
-                        .text(text.formatted(userInfo.getFullName(), requestInfo.getCurrency(), requestInfo.getValue()))
-        )
-                .doOnError(t -> log.error("При попытке отправить уведомление получена ошибка: {}", t.getMessage()))
-                .onErrorComplete()
-                .block();
+        log.info("Отправляем событие об уведомлении в {}", topicName);
+        var notificationRq = new SendNotificationRq()
+                .userMail(userInfo.getEmail())
+                .subject(subject.formatted(requestInfo.getCurrency()))
+                .text(text.formatted(userInfo.getFullName(), requestInfo.getCurrency(), requestInfo.getValue()));
+        kafkaTemplate.send(topicName, notificationRq);
     }
 }

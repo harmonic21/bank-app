@@ -37,8 +37,10 @@ data:
           url: http://account-service-svc:8080
         blocker:
           url: http://blocker-service-svc:8080
-        notification:
-          url: http://notification-service-svc:8080
+    kafka:
+      producer:
+        bootstraps: {{ .Values.kafka.bootstrap }}
+        topic-name: {{ .Values.kafka.notification_topic }}
     {{- with .Values.actuatorParams }}
     management:
       {{- toYaml . | nindent 6 }}
