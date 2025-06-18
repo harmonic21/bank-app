@@ -11,7 +11,6 @@ import ru.yandex.practicum.account.api.UserApi;
 import ru.yandex.practicum.blocker.ApiClient;
 import ru.yandex.practicum.blocker.api.CheckApi;
 import ru.yandex.practicum.exchange.api.CurrencyApi;
-import ru.yandex.practicum.notification.api.NotificationApi;
 
 @Configuration
 public class RestClientConfiguration {
@@ -44,19 +43,6 @@ public class RestClientConfiguration {
 
     @Bean
     @RequestScope
-    public ru.yandex.practicum.notification.ApiClient notificationApiClient(OAuth2AuthorizedClientManager manager,
-                                                                            @Value("${rest.client.notification.url}") String notificationUrl) {
-        OAuth2AuthorizeRequest request = OAuth2AuthorizeRequest.withClientRegistrationId("transfer-service")
-                .principal("system")
-                .build();
-        ru.yandex.practicum.notification.ApiClient client = new ru.yandex.practicum.notification.ApiClient();
-        client.setBasePath(notificationUrl);
-        client.setBearerToken(manager.authorize(request).getAccessToken().getTokenValue());
-        return client;
-    }
-
-    @Bean
-    @RequestScope
     public ru.yandex.practicum.exchange.ApiClient exchangeApiClient(OAuth2AuthorizedClientManager manager,
                                                                         @Value("${rest.client.exchange.url}") String exchangeUrl) {
         OAuth2AuthorizeRequest request = OAuth2AuthorizeRequest.withClientRegistrationId("transfer-service")
@@ -81,11 +67,6 @@ public class RestClientConfiguration {
     @Bean
     public UserApi userApi(ru.yandex.practicum.account.ApiClient accountsApiClient) {
         return new UserApi(accountsApiClient);
-    }
-
-    @Bean
-    public NotificationApi notificationApi(ru.yandex.practicum.notification.ApiClient notificationApiClient) {
-        return new NotificationApi(notificationApiClient);
     }
 
     @Bean

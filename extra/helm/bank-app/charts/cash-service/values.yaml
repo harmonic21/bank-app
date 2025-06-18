@@ -63,4 +63,4 @@ actuatorParams:
         enabled: true
 kafka:
   bootstrap: kafka-svc:9092
-  exchange_topic: "NOTIFICATION"
+  notification_topic: "NOTIFICATION"

@@ -1,0 +1,6 @@
+kafka:
+  bootstrap: kafka-svc:9092
+  exchange_topic: "NOTIFICATION"
+  notification_topic: "CURRENCY.ACTUAL"
+  exchange_group_id: "exchange-service-group"
+  notification_group_id: "notification-service-group"
