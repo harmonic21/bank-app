@@ -65,3 +65,7 @@ email:
   host: smtp.gmail.com
   port: 587
   box: test@gmail.com
+kafka:
+  bootstrap: kafka-svc:9092
+  notification_topic: "NOTIFICATION"
+  notification_group_id: "notification-service-group"

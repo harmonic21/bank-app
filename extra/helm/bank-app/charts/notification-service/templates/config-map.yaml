@@ -27,6 +27,11 @@ data:
     keycloak-custom:
       host: {{ .Values.identityProvider.host }}
       port: {{ .Values.identityProvider.port }}
+    kafka:
+      consumer:
+        bootstraps: {{ .Values.kafka.bootstrap }}
+        topic-name: {{ .Values.kafka.notification_topic }}
+        groupId: {{ .Values.kafka.notification_group_id }}
     {{- with .Values.actuatorParams }}
     management:
       {{- toYaml . | nindent 6 }}
