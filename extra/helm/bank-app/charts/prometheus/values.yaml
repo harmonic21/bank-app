@@ -1,0 +1,30 @@
+replicaCount: 1
+image:
+  repository: quay.io/prometheus/prometheus
+  pullPolicy: IfNotPresent
+  tag: "latest"
+command: []
+containerArgs: []
+containerEnv: []
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 9090
+resources: {}
+volumes:
+  - name: prometheus-configuration
+    configMap:
+      name: prometheus-config
+volumeMounts:
+  - name: prometheus-configuration
+    mountPath: /etc/prometheus
+    readOnly: true
+nodeSelector: {}
+tolerations: []
+affinity: {}
