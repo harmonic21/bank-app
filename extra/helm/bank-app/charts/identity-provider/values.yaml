@@ -28,3 +28,12 @@ volumeMounts: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+readinessProbe:
+  httpGet:
+    path: /health/ready
+    port: 8080
+  initialDelaySeconds: 120
+  periodSeconds: 20
+  timeoutSeconds: 15
+  successThreshold: 1
+  failureThreshold: 3
