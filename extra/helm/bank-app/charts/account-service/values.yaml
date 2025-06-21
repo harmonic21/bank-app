@@ -61,6 +61,12 @@ actuatorParams:
     health:
       probes:
         enabled: true
+  zipkin:
+    tracing:
+      endpoint: http://zipkin-svc:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1
 db:
   url: jdbc:postgresql://postgre-db-svc:5432/yandex_practicum
   driver: org.postgresql.Driver
