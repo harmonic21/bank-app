@@ -61,6 +61,12 @@ actuatorParams:
     health:
       probes:
         enabled: true
+  zipkin:
+    tracing:
+      endpoint: http://zipkin-svc:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1
 email:
   host: smtp.gmail.com
   port: 587
