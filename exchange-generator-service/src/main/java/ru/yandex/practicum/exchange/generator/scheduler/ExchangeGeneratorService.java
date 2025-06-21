@@ -1,5 +1,6 @@
 package ru.yandex.practicum.exchange.generator.scheduler;
 
+import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ public class ExchangeGeneratorService {
     private static final Random RANDOM = new Random();
 
     private final KafkaTemplate<String, CurrencyInfo> kafkaTemplate;
+    private final Tracer trace;
 
     @Value("${kafka.producer.topic-name}")
     private String topicName;
@@ -28,10 +30,21 @@ public class ExchangeGeneratorService {
     @Scheduled(fixedDelay = 5L, timeUnit = TimeUnit.SECONDS)
     public void generateActualExchangeInfo() {
         log.info("Отправляем событие в {} о курсе рубля", topicName);
-        kafkaTemplate.send(topicName, RUB_INFO);
+        sendEventAndTrace(() -> kafkaTemplate.send(topicName, RUB_INFO), "kafka.%s.RUB".formatted(topicName));
         log.info("Отправляем событие в {} о курсе юаня", topicName);
-        kafkaTemplate.send(topicName, new CurrencyInfo().name("Юань").shortName("CNY").value(BigDecimal.valueOf(RANDOM.nextDouble(100))));
+        var cnyEvent = new CurrencyInfo().name("Юань").shortName("CNY").value(BigDecimal.valueOf(RANDOM.nextDouble(100)));
+        sendEventAndTrace(() -> kafkaTemplate.send(topicName, cnyEvent), "kafka.%s.CNY".formatted(topicName));
         log.info("Отправляем событие в {} о курсе доллара", topicName);
-        kafkaTemplate.send(topicName, new CurrencyInfo().name("Доллар").shortName("USD").value(BigDecimal.valueOf(RANDOM.nextDouble(100))));
+        var usdEvent = new CurrencyInfo().name("Доллар").shortName("USD").value(BigDecimal.valueOf(RANDOM.nextDouble(100)));
+        sendEventAndTrace(() -> kafkaTemplate.send(topicName, usdEvent), "kafka.%s.USD".formatted(topicName));
+    }
+
+    private void sendEventAndTrace(Runnable runnable, String name) {
+        var span = trace.nextSpan().remoteServiceName("kafka").name(name).start();
+        try {
+            runnable.run();
+        } finally {
+            span.end();
+        }
     }
 }
