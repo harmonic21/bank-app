@@ -56,10 +56,18 @@ identityProvider:
   host: identity-provider-svc
   port: 8080
 actuatorParams:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, metrics, health
   endpoint:
     health:
       probes:
         enabled: true
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
   zipkin:
     tracing:
       endpoint: http://zipkin-svc:9411/api/v2/spans

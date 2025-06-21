@@ -12,3 +12,52 @@ data:
           - targets: ["front-ui-svc:8080"]
             labels:
               app: "front-ui"
+      - job_name: "account-service"
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ["account-service-svc:8080"]
+            labels:
+              app: "account-service"
+      - job_name: "blocker-service"
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ["blocker-service-svc:8080"]
+            labels:
+              app: "blocker-service"
+      - job_name: "cash-service"
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ["cash-service-svc:8080"]
+            labels:
+              app: "cash-service"
+      - job_name: "exchange-generator-service"
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ["exchange-generator-service-svc:8080"]
+            labels:
+              app: "exchange-generator-service"
+      - job_name: "exchange-service"
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ["exchange-service-svc:8080"]
+            labels:
+              app: "exchange-service"
+      - job_name: "notification-service"
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ["notification-service-svc:8080"]
+            labels:
+              app: "notification-service"
+      - job_name: "transfer-service"
+        metrics_path: '/actuator/prometheus'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ["transfer-service-svc:8080"]
+            labels:
+              app: "transfer-service"
