@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     parameters {
-        choice(name: "service", choices: ["bank-app", "front-ui", "account-service", "blocker-service", "cash-service", "exchange-service", "exchange-generator-service", "notification-service", "transfer-service", "identity-provider", "postgre-db", "zipkin", "prometheus"], description: "Choose service for build and deploy")
+        choice(name: "service", choices: ["bank-app", "front-ui", "account-service", "blocker-service", "cash-service", "exchange-service", "exchange-generator-service", "notification-service", "transfer-service", "identity-provider", "postgre-db", "zipkin", "prometheus", "grafana"], description: "Choose service for build and deploy")
         choice(name: "namespace", choices: ["dev", "test", "prod"], description: "Choose namespace")
         booleanParam(name: "skip_test", defaultValue: false, description: "Skip test on service build")
     }
@@ -106,7 +106,7 @@ pipeline {
 }
 
 def isNeedBuild(serviceName, Closure steps) {
-    if (serviceName == 'postgre-db' || serviceName == 'identity-provider' || serviceName == 'zipkin' || serviceName == 'prometheus') {
+    if (serviceName == 'postgre-db' || serviceName == 'identity-provider' || serviceName == 'zipkin' || serviceName == 'prometheus' || serviceName == 'grafana') {
         echo "We not use source-code of $params.service and don't need to build it. Skip step"
     } else {
         steps.call()

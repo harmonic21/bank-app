@@ -1,0 +1,29 @@
+replicaCount: 1
+image:
+  repository: grafana/grafana
+  pullPolicy: IfNotPresent
+  tag: "latest"
+command: []
+containerArgs: []
+containerEnv: []
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 3000
+resources: {}
+volumes:
+  - name: grafana-pv
+    persistentVolumeClaim:
+      claimName: grafana-pvc
+volumeMounts:
+  - name: grafana-pv
+    mountPath: /var/lib/grafana
+nodeSelector: {}
+tolerations: []
+affinity: {}
