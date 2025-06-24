@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+data:
+  logstash.conf: |
+    input {
+      kafka {
+        bootstrap_servers => "{{ .Values.kafka.bootstrap }}"
+        topics => ["{{ .Values.kafka.log_topic }}"]
+        group_id => "{{ .Values.kafka.log_group_id }}"
+        decorate_events => extended
+      }
+    }
+    filter {
+      grok {
+        match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:log-level} \[%{DATA:class}\]:%{GREEDYDATA:message}" }
+      }
+    }
+    output {
+      stdout {
+        codec => rubydebug
+      }
+    }
