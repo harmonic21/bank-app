@@ -46,3 +46,5 @@ management:
     health:
       probes:
         enabled: true
+logging:
+  config: classpath:log4j.xml
