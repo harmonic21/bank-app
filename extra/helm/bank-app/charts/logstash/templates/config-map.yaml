@@ -9,7 +9,6 @@ data:
         bootstrap_servers => "{{ .Values.kafka.bootstrap }}"
         topics => ["{{ .Values.kafka.log_topic }}"]
         group_id => "{{ .Values.kafka.log_group_id }}"
-        decorate_events => extended
       }
     }
     filter {
@@ -18,7 +17,10 @@ data:
       }
     }
     output {
-      stdout {
-        codec => rubydebug
+      elasticsearch {
+        hosts => ["http://elasticsearch-svc:9200"]
+        index => "logs-%{+dd.MM.YYYY}"
+        retry_on_conflict => 3
+        action => "index"
       }
     }
