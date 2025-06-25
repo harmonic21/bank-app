@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kibana
+description: UI компонент для работы с логами
+type: application
+version: 0.1.0
+appVersion: "1.0.0-SNAPSHOT"

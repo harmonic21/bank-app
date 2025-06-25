@@ -1,19 +1,13 @@
 replicaCount: 1
 image:
-  repository: elasticsearch
+  repository: kibana
   pullPolicy: IfNotPresent
   tag: "9.0.2"
 command: []
 containerArgs: []
 containerEnv:
-  - name: "discovery.type"
-    value: "single-node"
-  - name: "node.name"
-    value: "node-1"
-  - name: "xpack.security.enabled"
-    value: "false"
-  - name: "xpack.security.http.ssl.enabled"
-    value: "false"
+  - name: "ELASTICSEARCH_HOSTS"
+    value: "http://elasticsearch-svc:9200"
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -23,7 +17,7 @@ podSecurityContext: {}
 securityContext: {}
 service:
   type: ClusterIP
-  port: 9200
+  port: 5601
 resources: {}
 volumes: {}
 volumeMounts: {}
