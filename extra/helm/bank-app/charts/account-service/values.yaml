@@ -85,3 +85,6 @@ db:
   url: jdbc:postgresql://postgre-db-svc:5432/yandex_practicum
   driver: org.postgresql.Driver
   schema: bank_account
+kafka:
+  bootstrap: kafka-svc:9092
+  log_topic: "BANK.APP.LOGGING"

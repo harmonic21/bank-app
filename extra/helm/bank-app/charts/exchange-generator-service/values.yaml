@@ -74,3 +74,4 @@ actuatorParams:
 kafka:
   bootstrap: kafka-svc:9092
   exchange_topic: "CURRENCY.ACTUAL"
+  log_topic: "BANK.APP.LOGGING"

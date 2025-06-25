@@ -24,10 +24,11 @@ public class CheckController implements OperationApi {
 
     @Override
     public ResponseEntity<CheckResultRs> checkClientOperation(CheckOperationRq checkOperationRq) {
+        log.info("Получен запрос на проверку допустимости операции");
         int checkResult = RANDOM.nextInt(100);
         CheckResultRs checkResultRs;
         if (checkResult < 4) {
-            log.info("Операция {} запрещена: {}", checkOperationRq.getRequestAction(), BLOCKER_REASONS.get(checkResult));
+            log.warn("Операция {} запрещена: {}", checkOperationRq.getRequestAction(), BLOCKER_REASONS.get(checkResult));
             checkResultRs = new CheckResultRs().approved(false).reason(BLOCKER_REASONS.get(checkResult));
         } else {
             log.info("Операция {} одобрена.", checkOperationRq.getRequestAction());

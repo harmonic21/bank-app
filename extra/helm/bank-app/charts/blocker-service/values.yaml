@@ -74,3 +74,6 @@ actuatorParams:
   tracing:
     sampling:
       probability: 1
+kafka:
+  bootstrap: kafka-svc:9092
+  log_topic: "BANK.APP.LOGGING"

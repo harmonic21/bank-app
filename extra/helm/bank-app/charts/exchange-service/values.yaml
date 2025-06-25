@@ -78,3 +78,4 @@ kafka:
   bootstrap: kafka-svc:9092
   exchange_topic: "CURRENCY.ACTUAL"
   exchange_group_id: "exchange-service-group"
+  log_topic: "BANK.APP.LOGGING"

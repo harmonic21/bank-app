@@ -84,3 +84,4 @@ actuatorParams:
 kafka:
   bootstrap: kafka-svc:9092
   notification_topic: "NOTIFICATION"
+  log_topic: "BANK.APP.LOGGING"

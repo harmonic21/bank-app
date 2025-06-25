@@ -2,6 +2,7 @@ package ru.yandex.practicum.front.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MainController {
@@ -54,6 +56,7 @@ public class MainController {
             var errors = bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .toList();
+            log.error("При попытке редактировать пароль получены ошибки: {}", errors);
             model.addAttribute("passwordErrors", errors);
             return "main.html";
         }
@@ -70,6 +73,7 @@ public class MainController {
             var errors = bindingResult.getAllErrors().stream()
                     .map(ObjectError::getDefaultMessage)
                     .toList();
+            log.error("При попытке изменить информацию о пользователе получены ошибки: {}", errors);
             model.addAttribute("userAccountsErrors", errors);
         } else {
             userAccountService.updatePersonalUserInfo(login, personalUserInfoDto);
@@ -86,6 +90,7 @@ public class MainController {
                                       Model model) {
         var result = userAccountService.updateCash(action, login, cashCurrency, value);
         if (BooleanUtils.isFalse(result.getStatus())) {
+            log.error("При проведении операций с наличными деньгами получены ошибки: {}", result.getError().getErrorMessage());
             model.addAttribute("cashErrors", List.of(result.getError().getErrorMessage()));
             return "main.html";
         }
@@ -102,6 +107,7 @@ public class MainController {
                                 Model model) {
         var result = transferService.doTransfer(login, toLogin, fromCurrency, toCurrency, transferValue);
         if (BooleanUtils.isFalse(result.getStatus())) {
+            log.error("При попытке перевода средств получены ошибки: {}", result.getError().getErrorMessage());
             if (Objects.equals(login, toLogin)) {
                 model.addAttribute("transferErrors", List.of(result.getError().getErrorMessage()));
             } else {

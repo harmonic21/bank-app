@@ -1,6 +1,7 @@
 package ru.yandex.practicum.front.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Optional;
 
 import static java.util.function.Predicate.not;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserAccountService {
@@ -35,7 +37,10 @@ public class UserAccountService {
     }
 
     public void updateUserPassword(String userName, String password) {
-        userServiceClient.updateUserInfo(userName, new UpdateUserInfoRq().password(passwordEncoder.encode(password))).block();
+        userServiceClient.updateUserInfo(userName, new UpdateUserInfoRq().password(passwordEncoder.encode(password)))
+                .doOnNext(ignore -> log.info("Пароль успешно обновлен"))
+                .doOnError(t -> log.error("При попытке изменить пароль получена ошибка: {}", t.getMessage()))
+                .block();
     }
 
     public List<ShortUserInfoDto> getAllRegisteredUsers(String currentUser) {

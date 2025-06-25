@@ -19,3 +19,26 @@ data:
     management:
       {{- toYaml . | nindent 6 }}
     {{- end }}
+    logging:
+      config: /config/log4j.xml
+  log4j.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="WARN">
+        <Appenders>
+            <Console name="Console" target="SYSTEM_OUT">
+                <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%C]:%msg%n"/>
+            </Console>
+            <Kafka name="Kafka" topic="{{ .Values.kafka.log_topic }}">
+                <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%C]:%msg%n"/>
+                <Property name="bootstrap.servers">{{ .Values.kafka.bootstrap }}</Property>
+            </Kafka>
+        </Appenders>
+        <Loggers>
+            <Root level="info">
+                <AppenderRef ref="Kafka"/>
+            </Root>
+            <Logger name="org.apache.kafka" level="INFO" >
+                <AppenderRef ref="Console"/>
+            </Logger>
+        </Loggers>
+    </Configuration>

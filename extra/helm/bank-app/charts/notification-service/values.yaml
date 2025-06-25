@@ -89,3 +89,4 @@ kafka:
   bootstrap: kafka-svc:9092
   notification_topic: "NOTIFICATION"
   notification_group_id: "notification-service-group"
+  log_topic: "BANK.APP.LOGGING"
