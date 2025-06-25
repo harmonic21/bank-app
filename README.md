@@ -78,6 +78,31 @@ spring:
 ![Пример логов продюссера](extra/screenshot/exchange-generator-produce.png)
 ![Пример логов консюмера](extra/screenshot/exchange-service-consume.png)
 
+## Мониторинг и логи с помощь ELK-стека
+# Zipkin и трасировка запросов
+Все сервисы настроены на публикацию трасировок в сервис zipkin с использованием микрометра
+![Пример связей между сервисами](extra/screenshot/zipkin-dependency.png)
+![Пример полной трасировки](extra/screenshot/zipkin-tracing.png)
+
+# Prometheus и метрики приложений
+Все сервисы отдают метрики (Spring, HTTP, JVM, Business) в формате prometheus. Метрики агрегируются в Prometheus   
+Также созданы специальные бизнес метрики, например метрика удачных/неудачных попыток аутентификации или метрика ошибок при обновлении курсов валют   
+Для особо критичных блоков приложения реализованы алерты
+![Пример алерт в prometheus](extra/screenshot/prometheus_alert.png)
+![Пример кастомной метрики](extra/screenshot/custom_metric_graph.png)
+
+# Grafana и дашборды
+Для удобной агрегации логов и их компоновке в тематических дашбордах реализована работа с Grafana
+![Пример дашбордов](extra/screenshot/grafana_dashboards.png)
+![Пример jvm дашборда](extra/screenshot/grafana_jvm.png)
+![Пример http дашборда](extra/screenshot/grafana_http.png)
+![Пример дашборда http-статусов](extra/screenshot/grafana_status_codes.png)
+
+# Логи и ELK-стек
+Для реализации центролизованного хранения логов и их валидации используется ELK стек. Все приложения публикуют логи в едином формате в Kafka-топик BANK.APP.LOGGING   
+Топик читает logstash, преобразует строку лога в удобо-читаемый json и передает в Elasticsearch. В данном случае elastic выступает как движок поиска и хранилище логов, а для их визуализации подключена Kibana   
+![Пример индекса в elastic](extra/screenshot/elastic_logs.png)
+
 # Использование приложения
 Главная страница приложения доступна по адресу http://localhost:8080   
 При первом подключении вы будете направлены на страница http://localhost:8080/signin для ввода логина и пароля   
